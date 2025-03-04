@@ -44,15 +44,15 @@ CREATE TABLE Log (
 CREATE TABLE Exercise(
 	eid INT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	name VARCHAR(100) NOT NULL,
-	caloriesPerRep INT,
-	caloriesPerMinute INT	
+	caloriesPerRep FLOAT,
+	caloriesPerMinute FLOAT	
 );
 
 CREATE TABLE Entered_exercise (
     eeid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     lid INT NOT NULL,
     eid INT NOT NULL,
-    caloriesBurned INT NOT NULL,
+    caloriesBurned FLOAT NOT NULL,
     time INT,
     sets INT NOT NULL,
     reps INT,

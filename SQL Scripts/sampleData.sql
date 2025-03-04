@@ -1,3 +1,5 @@
+USE s25_amnt;
+
 INSERT INTO User(age, weight, email, height, username, isAdmin, password, weeklyCalGoal, isDeleted) VALUES
 	(18, 130, "miado@gmail.com", 5.3, "miamia123", false, "mimi", 3000, false),
 	(20, 155, "leah@gmail.com", 6.5, "lehuy123", true, "lehuy@1", 1200, true),
@@ -24,22 +26,22 @@ INSERT INTO Exercise(eID, name, caloriesPerRep, caloriesPerMinute) VALUES
 
 INSERT INTO Workout_template (uid, courseID, isDeleted)
 VALUES
-  (2, 111, 0),
-  (2, 112, 0),
-  (2, 113, 0),
-  (2, 114, 0);
+  (2, 111, false),
+  (2, 112, false),
+  (2, 113, false),
+  (2, 114, false);
 
 INSERT INTO Entered_exercise 
     (lid, eid, caloriesBurned, time, sets, reps, weight)
 VALUES
-  (5, 1, 36,  0, 3, 30, 0),  
-  (5, 2,  9,  0, 3, 10, 0),  
-  (6, 3, 150, 15, 1,  NULL, 0), 
-  (6, 4, 120, 15, 1,  NULL, 0), 
-  (7, 1, 48,  0, 4, 30, 0), 
-  (7, 2, 12,  0, 4, 10, 0),  
-  (8, 3, 100, 10, 1, NULL, 0),
-  (8, 4,  80, 10, 1, NULL, 0); 
+  (1, 1, 36,  0, 3, 30, 0),  
+  (1, 2,  9,  0, 3, 10, 0),  
+  (2, 3, 150, 15, 1,  NULL, 0), 
+  (2, 4, 120, 15, 1,  NULL, 0), 
+  (3, 1, 48,  0, 4, 30, 0), 
+  (3, 2, 12,  0, 4, 10, 0),  
+  (4, 3, 100, 10, 1, NULL, 0),
+  (4, 4,  80, 10, 1, NULL, 0); 
 
 
 INSERT INTO Templated_exercise 
