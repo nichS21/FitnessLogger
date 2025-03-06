@@ -8,10 +8,18 @@ CREATE TABLE User (
 	email VARCHAR(150) NOT NULL,
 	height INT NOT NULL,
 	username VARCHAR(150) NOT NULL,
-	isAdmin BOOLEAN NOT NULL,
 	password VARCHAR(255) NOT NULL,
-	weeklyCalGoal INT NOT NULL,
-	isDeleted BOOLEAN NOT NULL
+	weeklyCalGoal INT NOT NULL
+);
+
+CREATE TABLE DelUser (
+    uid INT PRIMARY KEY NOT NULL,
+    FOREIGN KEY (uid) REFERENCES User(uid)
+);
+
+CREATE TABLE Admin (
+    uid INT PRIMARY KEY NOT NULL,
+    FOREIGN KEY (uid) REFERENCES User(uid)
 );
 
 CREATE TABLE Course (
@@ -19,8 +27,12 @@ CREATE TABLE Course (
     uid INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TINYTEXT NOT NULL,
-    isDeleted BOOLEAN NOT NULL,
     FOREIGN KEY (uid) REFERENCES User(uid)
+);
+
+CREATE TABLE DelCourse (
+    courseID INT PRIMARY KEY NOT NULL,
+    FOREIGN KEY (courseID) REFERENCES Course(courseID)
 );
 
 CREATE TABLE Enrollment (
@@ -37,7 +49,7 @@ CREATE TABLE Log (
 	feedback TINYTEXT,
 	date DATETIME NOT NULL,
 	tid INT NULL,
-    	FOREIGN KEY (uid) REFERENCES User(uid)
+    FOREIGN KEY (uid) REFERENCES User(uid)
 );
 
 
@@ -66,9 +78,13 @@ CREATE TABLE Workout_template (
     tid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     uid INT NOT NULL,
     courseID INT NOT NULL,
-    isDeleted BOOLEAN NOT NULL,
     FOREIGN KEY (uid) REFERENCES User(uid),
     FOREIGN KEY (courseID) REFERENCES Course(courseID)
+);
+
+CREATE TABLE DelTemplate (
+    tid INT PRIMARY KEY NOT NULL,
+    FOREIGN KEY (tid) REFERENCES Workout_template(tid)
 );
 
 CREATE TABLE Templated_exercise (
