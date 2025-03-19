@@ -2,8 +2,10 @@
 <html>
 <head>
     <title> AMNT Fitness Logger </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/site.css" rel="stylesheet">
+    <?php 
+        include_once("scriptsPHP\util.php"); 
+        neededImports();
+    ?>
 </head>
 
 <style>
@@ -35,15 +37,25 @@
 </style>
 
 <body>
-    <div class="container-fluid site-color p-3 text-white">
-        <img src="images/amntLogo.png" height="50px" width="auto" class="float-start mx-auto d-block" /> 
-        <p class="fs-1" style="padding-left:10px; display:inline">AMNT Fitness Logger</p>
-    </div>
+    <!-- Nav bar -->
+    <div class="container-fluid site-color p-3 text-white"> 
+        <div class="row">
+            <div class="col-md-1">
+                <img src="../images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
+            </div>
+            <div class="col-md-9">
+                <p class="fs-1" style="display:inline">AMNT Fitness Logger</p>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>  
 
+    <!-- Background image -->
     <div class="container-fluid bg-main p-0">
-        <img src="images/Blurred-runners-cropped.jpg" height=150px" width="100%">
+        <img src="images/Blurred-runners-cropped.jpg" height="150px" width="100%">
     </div>
 
+    <!-- Main content -->
     <div class="container-fluid text-dark">
         <div class="row">
             <div class="col-md-6" style="margin-bottom:80px">
@@ -62,7 +74,6 @@
                 </div> 
             </div>
             <div class="col-md-6 text-dark">
-                
                 <div class="login p-5">
                     <p class="text-center fs-2">Login:</p>
                     <form method="POST">
@@ -74,7 +85,6 @@
 
                     <p class="text-center fs-3" style="font-weight:bold">OR</p> <br/>
                     <a href="#" class="lBtn site-color">Sign Up</a>
-
                 </div>
             </div>
         </div>
