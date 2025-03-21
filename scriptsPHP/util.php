@@ -2,10 +2,12 @@
 
 /*
 * Function to include needed CSS/JS imports for any page on site
+* Made by Nick
 */
 function neededImports() 
 { ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" >
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="../css/site.css" rel="stylesheet">
 <?php
@@ -14,6 +16,7 @@ function neededImports()
 /*
 * Generate navbar at top of page (intended to be used throughout site).
 * NOTE: Not used on landing page to eliminate unnecessary 'Account' dropdown button
+* Made by Nick
 */
 function genNavBar()
 {
