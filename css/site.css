@@ -2,6 +2,10 @@
     background-color:#43a7e0;
 }
 
+.site-color-2nd{
+    background-color:#1c6995
+}
+
 .site-font{
     font-family: "Helevetica Neue", sans-serif;
 }
@@ -61,4 +65,8 @@
 .delBtn{
     font-size:40px;
     color:#f24141;
+}
+
+.clickable{
+    cursor:pointer;
 }

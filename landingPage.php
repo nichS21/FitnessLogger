@@ -3,7 +3,7 @@
 <head>
     <title> AMNT Fitness Logger </title>
     <?php 
-        include_once("scriptsPHP\util.php"); 
+        include_once("scriptsPHP/util.php"); 
         neededImports();
     ?>
 </head>
