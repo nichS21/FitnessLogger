@@ -73,5 +73,20 @@ function closeModal()
 {
     let modal = document.getElementById('delModal');
     modal.style.display = "none";                        //hide  modal 
+
+    //remove listeners placed on the buttons (don't want delete event for a row we cancelled earlier to go off later)
+    //Delete button
+    var oldDelete = document.getElementById("modalCon");
+    var newDelete = oldDelete.cloneNode(true);
+    oldDelete.parentNode.replaceChild(newDelete, oldDelete);
+
+    oldDelete.remove();
+
+    //Cancel button
+    var oldCancel = document.getElementById("modalCan");
+    var newCancel = oldCancel.cloneNode(true);
+    oldCancel.parentNode.replaceChild(newCancel, oldCancel);
+
+    oldCancel.remove();
 }
 
