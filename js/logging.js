@@ -18,16 +18,18 @@ function addExercise(){
                        "<td>N/A</td>" + 
                        "<td>New PR</td>" + 
                        "<td class=\"modifyTD\"> <i class=\"bi bi-floppy saveBtn clickable\"></i>  </td>" +
-                       "<td class=\"modifyTD\"> <i class=\"bi bi-trash delBtn clickable\" onclick=\"deleteExercise('" + ID + "')\"></i>  </td>";
+                       "<td class=\"modifyTD\"> <i class=\"bi bi-trash delBtn clickable\" onclick=\"openModal('" + ID + "')\"></i>  </td>";
 }
 
 
 //Function that deletes a row out of a the log table
-async function deleteExercise(rowID){
+function deleteExercise(rowID){
     let table = document.getElementById('logTable');
     table.deleteRow(rowID); 
 
     renameRows(table);                        //IDs for each row may have to be recalculated
+
+    closeModal();                             //Close modal on the way out
 }
 
 //Function to loop over rows in table and reassign their IDs, given possibility that 'addExercise' may add a row that has an ID of a row that was previously deleted
@@ -42,7 +44,7 @@ function renameRows(table)
         currRow.id = "row" + i;
 
         //edit delete button of this row to have proper new, ID
-        currRow.cells[7].innerHTML = "<i class=\"bi bi-trash delBtn clickable\" onclick=\"deleteExercise('" + i + "')\">";
+        currRow.cells[7].innerHTML = "<i class=\"bi bi-trash delBtn clickable\" onclick=\"openModal('" + i + "')\">";
     }
 }
 
@@ -62,7 +64,7 @@ function openModal(rowID)
     modal.style.display = "block";                        //show  modal 
 
     //add event listeners to the buttons in the modal
-    document.getElementById('modalCon').addEventListener("click", deleteExercise(rowID), { once: true });  //add listener, and automatically remove it after one event fires
+    document.getElementById('modalCon').addEventListener("click", function(){ deleteExercise(rowID) }, { once: true });  //add listener, and automatically remove it after one event fires
     document.getElementById('modalCan').addEventListener("click", closeModal, { once: true });  
 }
 

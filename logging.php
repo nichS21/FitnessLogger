@@ -152,7 +152,7 @@
                     <i class="bi bi-floppy saveBtn clickable" ></i>
                 </td>
                 <td class="modifyTD">
-                    <i class="bi bi-trash delBtn clickable" onclick="deleteExercise('1')"></i>
+                    <i class="bi bi-trash delBtn clickable" onclick="openModal('1')"></i>
                 </td>
             </tr>
             <tr id="row2">
@@ -166,7 +166,7 @@
                     <i class="bi bi-floppy saveBtn clickable" ></i>
                 </td>
                 <td class="modifyTD">
-                    <i class="bi bi-trash delBtn clickable" onclick="deleteExercise('2')"></i>
+                    <i class="bi bi-trash delBtn clickable" onclick="openModal('2')"></i>
                 </td>
             </tr>
             <tr id="row3">
@@ -180,7 +180,7 @@
                     <i class="bi bi-floppy saveBtn clickable" ></i>
                 </td>
                 <td class="modifyTD">
-                    <i class="bi bi-trash delBtn clickable" onclick="deleteExercise('3')"></i>
+                    <i class="bi bi-trash delBtn clickable" onclick="openModal('3')"></i>
                 </td>
             </tr>
         </table>
