@@ -1,2 +1,3 @@
 FitnessLogger.code-workspace
 .vscode/launch.json
+scriptsPHP/dbConnect.php
