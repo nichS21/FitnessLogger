@@ -1,5 +1,8 @@
 <?php 
 
+//include database connection
+include_once("scriptsPHP/dbConnect.php");
+
 /*
 * Function to include needed CSS/JS imports for any page on site
 * Made by Nick

@@ -4,8 +4,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Workout Logging </title>
     <?php 
-        include_once("scriptsPHP/util.php"); 
+        include_once("scriptsPHP\util.php"); 
+        include_once("scriptsPHP\logging.php");
         neededImports();
+
+        $func = "no log";                       //default to no log, must select a date
     ?>
 
     <script src="js/logging.js"></script>
@@ -106,9 +109,9 @@
                 <div class="card card-body">
                     <div class="row">
                         <div class="col-md-6 d-inline">
-                            <form method="POST" action="">
-                                <label for="logDate"> Choose a date: </label>
-                                <input type="date" name="logDate" min="2025-03-01" />
+                            <form method="POST" action="?func=log">
+                                <label for="date"> Choose a date: </label>
+                                <input type="date" name="date" min="2025-01-01" required/>
                                 <button class="gnrlBtn" type="submit">Search</button>
 
                             
@@ -125,68 +128,30 @@
 
 
 
-<!-- Logging table -->
+<!-- Logging table / Create Log -->
 <div class="container-fluid p-5">
-    <div class="table-responsive p-4 shadow" style="background-color:azure;">
-        <p class="site-font text-center fw-bold fs-3" style="display:block"> Log for <?php print "DATE_VAR" ?> </p>
 
-        <?php // will need to do a PHP for loop and add row ID automatically once have data ?>
+    <?php 
+    
+        if(isset($_GET['func']))  $func = $_GET['func'];
+          
+        switch($func)
+        {
+            case 'no log':
+                print "<h3>No date has been selected. Please choose one from above to view or create a log.</h3>\n";
+                break;
+            
+            case 'log': 
+                //TODO:
+                //HARDCODED UID, remove once login complete
+                displayPage($db, 2, $_POST);
+                //displayPage($db, $_SESSION['uid'], $_POST);
+                break;
+        }
+     
+    ?>
 
-        <table id="logTable">
-            <tr> 
-                <th>Exercise</th> 
-                <th>Sets</th> 
-                <th>Reps</th> 
-                <th>Weight(lbs)</th> 
-                <th>Duration(mins)</th> 
-                <th>Notes</th>
-            </tr>
-            <tr id="row1">
-                <td>Squat</td>
-                <td>3</td>
-                <td>8</td>
-                <td>225</td>
-                <td>N/A</td>
-                <td class="text-wrap">Had to push through the last rep in each set</td>
-                <td class="modifyTD">
-                    <i class="bi bi-floppy saveBtn clickable" ></i>
-                </td>
-                <td class="modifyTD">
-                    <i class="bi bi-trash delBtn clickable" onclick="openModal('1')"></i>
-                </td>
-            </tr>
-            <tr id="row2">
-                <td>Pullups</td>
-                <td>3</td>
-                <td>10</td>
-                <td>0</td>
-                <td>N/A</td>
-                <td class="text-wrap">Grip endurance could use more attention</td>
-                <td class="modifyTD">
-                    <i class="bi bi-floppy saveBtn clickable" ></i>
-                </td>
-                <td class="modifyTD">
-                    <i class="bi bi-trash delBtn clickable" onclick="openModal('2')"></i>
-                </td>
-            </tr>
-            <tr id="row3">
-                <td>Running</td>
-                <td>1</td>
-                <td>N/A</td>
-                <td>N/A</td>
-                <td>10</td>
-                <td class="text-wrap">Need to continue working on my stamina</td>
-                <td class="modifyTD">
-                    <i class="bi bi-floppy saveBtn clickable" ></i>
-                </td>
-                <td class="modifyTD">
-                    <i class="bi bi-trash delBtn clickable" onclick="openModal('3')"></i>
-                </td>
-            </tr>
-        </table>
-
-        <i class="bi bi-plus-square clickable" onclick="addExercise()" style="font-size:50px; margin-left:8%"></i>
-    </div>
+    
  </div>
 
 <!-- Weekly Goal Progress -->
