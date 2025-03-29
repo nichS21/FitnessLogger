@@ -21,9 +21,9 @@ INSERT INTO Course(courseID, uid, name, description) VALUES
 
 INSERT INTO Log(lid, uid, feedback, date, tid) VALUES
 	(1, 2, '', '2025-02-10', 2),
-  (2, 1, 'Had to push through the last set.', '2025-02-14', 4),
-  (3, 4, 'Quick session, felt good.', '2025-02-20', 3),
-  (4, 3, 'Challenging but finished.', '2025-02-25', 1);
+  (2, 1, '', '2025-02-14', 4),
+  (3, 4, '', '2025-02-20', 3),
+  (4, 3, '', '2025-02-25', 1);
 
 INSERT INTO Exercise(eID, name, caloriesPerRep, caloriesPerMinute) VALUES
 	(1, 'Push-Up', 0.4, 0),
@@ -41,15 +41,15 @@ INSERT INTO Workout_template (uid, courseID) VALUES
 Insert INTO DelTemplate (tid) VALUES 
   (5);
 
-INSERT INTO Entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight) VALUES
-  (1, 1, 36,  0, 3, 30, 0),  
-  (1, 2,  9,  0, 3, 10, 0),  
-  (2, 3, 150, 15, 1,  NULL, 0), 
-  (2, 4, 120, 15, 1,  NULL, 0), 
-  (3, 1, 48,  0, 4, 30, 0), 
-  (3, 2, 12,  0, 4, 10, 0),  
-  (4, 3, 100, 10, 1, NULL, 0),
-  (4, 4,  80, 10, 1, NULL, 0); 
+INSERT INTO Entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) VALUES
+  (1, 1, 36,  0, 3, 30, 0, 'Had to push through the last set.'),  
+  (1, 2,  9,  0, 3, 10, 0, NULL),  
+  (2, 3, 150, 15, 1,  NULL, 0, NULL), 
+  (2, 4, 120, 15, 1,  NULL, 0, NULL), 
+  (3, 1, 48,  0, 4, 30, 0, NULL), 
+  (3, 2, 12,  0, 4, 10, 0, 'Quick session, felt good.'),  
+  (4, 3, 100, 10, 1, NULL, 0, NULL),
+  (4, 4,  80, 10, 1, NULL, 0, 'Challenging, but finished.'); 
 
 INSERT INTO Templated_exercise (tid, eid, time, sets, reps, weight) VALUES
   (1, 1,  0, 3, 15,  0),   

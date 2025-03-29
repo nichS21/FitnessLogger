@@ -69,6 +69,7 @@ CREATE TABLE Entered_exercise (
     sets INT NOT NULL,
     reps INT,
     weight INT,
+    notes VARCHAR(255),
     FOREIGN KEY (lid) REFERENCES Log(lid) ON DELETE CASCADE,
     FOREIGN KEY (eid) REFERENCES Exercise(eid) ON DELETE CASCADE
 );
