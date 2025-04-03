@@ -61,8 +61,14 @@
     $stmt->bindParam(2, $date);
     $stmt->bindParam(3, $date);
     $resLog = $stmt->execute();
+    $rowCount = $stmt->rowCount();
 
-    if($resLog == false)                //No log found for this date, prompt user if they wish to create one
+    if($resLog == false)                            //Database error
+    {
+        print "<h3>An error has occured. Please try again.</h3>\n";
+        return;
+    }
+    else if($rowCount != 1)                  //No log found for this date, prompt user if they wish to create one
     {
         print "<h3>No log found for '" . $formData['date'] . "'</h3>\n";
         createLog($db, $uid, $date);
