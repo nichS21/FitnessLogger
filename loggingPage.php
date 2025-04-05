@@ -12,6 +12,7 @@
     ?>
 
     <script src="js/logging.js"></script>
+  
 
     <style>
         th, td{
@@ -102,7 +103,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 p-4">
-            <a class="gnrlBtn" href="landingPage.php">To Dashboard</a>
+            <a class="gnrlBtn" href="index.php">To Dashboard</a>
             <button class="gnrlBtn" type="button" data-bs-toggle="collapse" data-bs-target="#searchDate" aria-expanded="false" aria-controls="searchDate">View/Create Log</button>
 
             <div class="collapse p-2" id="searchDate">
@@ -111,7 +112,7 @@
                         <div class="col-md-6 d-inline">
                             <form method="POST" action="?func=log">
                                 <label for="date"> Choose a date: </label>
-                                <input type="date" name="date" min="2025-01-01" required/>
+                                <input type="date" name="date" id="date" min="2025-01-01" required/>
                                 <button class="gnrlBtn" type="submit">Search</button>
 
                             
@@ -158,6 +159,10 @@
 <!-- things like how many calories this log burned relative to your weekly goal -->
 
 
+<script>
+    //Add eventListeners to each row
+    window.onload = rowListeners();
+</script>
 
 </body>
 

@@ -19,7 +19,9 @@
     {
         //display each row
         $count = 1;
-        while($row = $sql->fetch())
+        $row = $sql->fetch();
+        while($count < 4)
+       // while($row = $sql->fetch())
         {
             print "<tr id=row$count>\n";
 
@@ -31,7 +33,7 @@
             print "<td> <textarea name=\"notes\" placeholder=\"notes\">" . $row['notes'] . "</textarea></td>";
 ?>
             <td class="modifyTD">
-                <i class="bi bi-floppy saveBtn clickable" ></i>
+                <i class="bi bi-pencil editBtn" ></i>
             </td>
             <td class="modifyTD">
                 <i class="bi bi-trash delBtn clickable" onclick="openModal('1')"></i>
@@ -105,10 +107,5 @@
     print "<h3>Create a log</h3>";
  }
 
-//Function to save a row of a log 
- function saveRow($db, $lid)
- {
-
- }
 
 ?>

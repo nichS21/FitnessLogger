@@ -24,9 +24,11 @@
     text-align:center;
     background-color:#D3D3D3 
 }
+
 .acctColor{
     background-color:#D3D3D3;
 }
+
 .gnrlBtn{
     font-family: "Helevetica Neue", sans-serif;
     border-radius: 5px;
@@ -41,6 +43,7 @@
     text-align:center;
     background-color:lightgrey 
 }
+
 .gnrlBtnSmall{
     font-family: "Helevetica Neue", sans-serif;
     border-radius: 5px;
@@ -55,16 +58,24 @@
     text-align:center;
     background-color:darkgrey 
 }
+
 .shadow{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.38);    
 }
+
 .saveBtn{
     font-size:40px;
     color:#41f265;
 }
+
 .delBtn{
     font-size:40px;
     color:#f24141;
+}
+
+.editBtn{
+    font-size:40px;
+    color:#706f6f
 }
 
 .clickable{
