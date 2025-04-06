@@ -43,7 +43,26 @@ function renameRows(table)
         let currRow = table.rows[i];
         currRow.id = "row" + i;
 
-        //edit delete button of this row to have proper new, ID
+
+        //for first six cells, must change inline 'oninput' function to have new rowID
+        for(let i = 0; i < 6; i++)
+        {
+            currCellInput = currRow.cells[i].children[0];       //first child is the input/textarea field
+            currCellInput.removeAttribute('oninput');
+            currCellInput.oninput = function() {showUnsaved(currRow.id)};   
+        }
+
+        //check if have edit or save button
+        editSaveBtn = currRow.cells[6].children[0];             //edit/save button is first and only child of this column
+        if(editSaveBtn.classList.contains('bi-floppy'))         //save button
+        {
+            currRow.cells[6].innerHTML = "<i class=\"bi bi-floppy saveBtn clickable\" onclick=\"save('" + currRow.id + "')\">"
+        }
+        else{                                                   //edit button
+            currRow.cells[6].innerHTML = "<i class=\"bi bi-pencil editBtn\" ></i>";
+        }
+
+        //change delete button of this row to have proper new, ID
         currRow.cells[7].innerHTML = "<i class=\"bi bi-trash delBtn clickable\" onclick=\"openModal('" + i + "')\">";
     }
 }
@@ -90,30 +109,38 @@ function closeModal()
     oldCancel.remove();
 }
 
-function rowListeners()
-{
-    let table = document.getElementById('logTable');
-    let rowCount = table.rows.length;
-
-    for(i = 1; i < rowCount; i++)
-    {
-        currRow = table.rows[i];
-        currRow.addEventListener('input', function(){ showUnsaved(currRow.id) });       //whenever any input field modified swap to save button
-    }
-}
 
 //Function that changes default edit button to save btn for a modified row
 function showUnsaved(ID)
 {
     let row = document.getElementById(ID);
 
-    row.cells[6].innerHTML = "<i class=\"bi bi-floppy saveBtn clickable\" onclick=\"saveRowAjax('" + row.id + "')\">";
+    row.cells[6].innerHTML = "<i class=\"bi bi-floppy saveBtn clickable\" onclick=\"save('" + row.id + "')\">";
+}
+
+//Saves a given row: if eeid is present, then updates a values in database, otherwise inserts into the database
+function save(rowID)
+{
+    let row = document.getElementById(rowID);
+    let eeidInput = row.cells[0].children[1];           //second child of the first <td> of a row is the hidden eeid input
+    let eeid = eeidInput.value;
+
+    if(!eeid) saveRowAjax(row);                         //not in database already, must insert
+    else if (eeid) editRowAjax(row);                    //already in DB, so update it
+    else alert("A JS error has occured upon save.");    //unexpected failure
 }
 
 //Function that sends a fetch request to loggingAjax.php to save a row
-function saveRowAjax(i)
+function saveRowAjax(row)
 {
-//https://kennethscoggins.medium.com/how-to-intercept-html-form-submit-with-javascript-for-your-own-uses-2dd22b36d46
+    //fetch call
+    alert("Row saved");
+
+    //change save button back to edit
+    row.cells[6].innerHTML = "<i class=\"bi bi-pencil clickable\" onclick=\"save('" + row.id + "')\">";
+
+    //new row must have eeid added to the first cell
+
 
     //on page load -> add event listeners to each row's form that changes edit icon to save with appropriate funciton
     //whenever save button pressed, grab all input/textarea values within said function
@@ -121,21 +148,64 @@ function saveRowAjax(i)
     // read response from server, if success move on, if fail JS alert to USEr
     // Method succeeds swap back to edit button, instead of save
 
-    //NOTE HAVE TO CHANGE renameRows() function so that accounts for new listeners as well for the rows
-    //Easiest is to clone form and then just replace it with a new one and new eventlisteners (would have to grab currentID and replace form, then give row and form the new IDs)
-    //also need some clause so that if save button present, give it a new onclick with ID (just replace old one) otherwise is edit button and can leave alone
 
     //new rows must be created with save button by default
 }
 //see loggingAjax.php and fetch API docs for how to use
-//I think for getting the data from the page, have to attach a bunch of listeners to each input field in a row, then just grab data from them directly
-// unless can intercept form submit with JS?
 // If cannot intercept form, need to do form validation to ensure each input has values (except notes)
-// Can use 'input' event to see when input/textarea fields are changed
+
+//Function that sends a fetch request to loggingAjax.php to edit a row in the DB
+async function editRowAjax(row)
+{
+    //create form validation function? 
+
+    let data = {
+        "action" : "updateRow",
+        "eeid" : row.cells[0].children[1].value,
+        "lid" : document.getElementById('lid').value,
+        "eid" : row.cells[0].children[2].value,
+        "time" : row.cells[4].children[0].value, 
+        "sets" : row.cells[1].children[0].value,
+        "reps" : row.cells[2].children[0].value,
+        "weight" : row.cells[3].children[0].value,
+        "notes" : row.cells[5].children[0].value
+    }
+
+    //JS fetch call to PHP 
+    const request = new Request("scriptsPHP/loggingAjax.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    try
+    {
+        const response = await fetch(request);
+
+        if(!response.ok) {                          //bad status response from server (not in 2xx range)
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        let serverJson = await response.json();     //response from server in JSON, to check for further messages
+
+    }
+    catch (error)
+    {
+        console.error(error.message);
+    }
+
+
+    alert("Row saved.");
+
+    //change save back to edit button
+    row.cells[6].innerHTML = "<i class=\"bi bi-pencil editBtn\" onclick=\"save('" + row.id + "')\">";
+}
 
 //Function that sends a fetch request to loggingAjax.php to delete a row
-function delRowAjax()
+function delRowAjax(row)
 {
-
+    ///have to link back with deleteExercise function and the modal
 }
 

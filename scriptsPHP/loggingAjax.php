@@ -6,7 +6,7 @@
 *   This file written by Nick
 */
 
-include_once("scriptsPHP/dbConnect.php");
+include_once("dbConnect.php");
 
 //https://stackoverflow.com/questions/64600132/can-i-call-specific-methods-from-file-php-using-javascripts-fetch-function
 
@@ -26,12 +26,13 @@ function calcCals($db, $formData)
 
     $stmt = $db->prepare($sql);
     $stmt->bindParam(1, $eid);
-    $res = $db->execute();
-
-    $row = $res->fetch();
+    $res = $stmt->execute();
 
     //return caloriesBurned
     if($res == false) throw new Exception('Failed to calculate calories.');
+
+
+    $row = $stmt->fetch();
 
     if($row['caloriesPerRep'] <= 0)     //calculate based on time
     {
@@ -52,12 +53,11 @@ function saveRow($db, $formData)
         //calculate calories burned
         $burnedCals = calcCals($db, $formData);
 
-
         //insert the data
         $sql = "INSERT INTO entered_exercises (lid, eid, caloriesBurned, time, sets, reps, weight, notes) " .
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $bindParams = array($formData['lid'], $formData['eid'], $formData['caloriesBurned'], $formData['time'], $formData['sets'], $formData['reps'], $formData['weight'], $formData['notes']);
+        $bindParams = array($formData['lid'], $formData['eid'], $burnedCals, $formData['time'], $formData['sets'], $formData['reps'], $formData['weight'], $formData['notes']);
         $stmt = $db->prepare($sql);
         $res = $stmt->execute($bindParams);
 
@@ -79,15 +79,45 @@ function saveRow($db, $formData)
                 'msg' => $e->getMessage()
             )
         ));
-    }
-    
+    } 
 }
 
 //Function to update a row of a log, in the DB
 function updateRow($db, $formData)
 {
-    //calculate calories burned
+    try
+    {
+        //calculate calories burned
+        $burnedCals = calcCals($db, $formData);
 
+        //update the data
+        $sql = "UPDATE entered_exercise " . 
+               "SET eid = ?, caloriesBurned = ?, time = ?, sets = ?, reps = ?, weight = ?, notes = ? " . 
+               "WHERE eeid = ? ";
+
+        $bindParams = array($formData['eid'], $burnedCals, $formData['time'], $formData['sets'], $formData['reps'], $formData['weight'], $formData['notes'], $formData['eeid']);
+        
+        $stmt = $db->prepare($sql);
+        $res = $stmt->execute($bindParams);
+
+        if($res == false) throw new Exception("Failed to save row to database.");
+
+        //pass a success message back to JS on client's side
+        echo json_encode(array(
+            'success' => array(
+                'msg' => 'Exercise saved.'
+            )
+        ));
+    }
+    catch (Exception $e) 
+    {
+        //pass an error message back to JS on client's side
+        echo json_encode(array(
+            'error' => array(
+                'msg' => $e->getMessage()
+            )
+        ));
+    }
 }
 
 //Function to delete a row of a log from the DB
@@ -97,13 +127,19 @@ function delRow($db, $formData)
 }
 
 //If this file requested, see which function to call
-if($_POST['action'] = 'saveRow'){
-    saveRow($db, $_POST);
+$formData = json_decode(file_get_contents('php://input'), true);    //Must use this instead of $_POST to recieve all data
+
+if($formData['action'] == 'saveRow'){
+    saveRow($db, $formData);
 }
-else if($_POST['action'] = 'delRow'){
-    delRow($db, $_POST);
+else if($formData['action'] == 'delRow'){
+    delRow($db, $formData);
 }
-else if($_POST['action'] = 'updateRow')
+else if($formData['action'] == 'updateRow')
+{
+    updateRow($db, $formData);
+}
+else return;
 
 
 ?>

@@ -19,30 +19,36 @@
     {
         //display each row
         $count = 1;
-        $row = $sql->fetch();
-        while($count < 4)
-       // while($row = $sql->fetch())
+        $lid  = -1;                     //start with dummy value
+        while($row = $sql->fetch())
         {
-            print "<tr id=row$count>\n";
+            $rowID = 'row' . $count;
+            print "<tr id=$rowID>\n";
 
-            print "<td> <input type=\"text\" name=\"exercise\" placeholder=\"exercise\" value=\"" . $row['name'] . "\" required/> </td>";
-            print "<td> <input type=\"number\" name=\"sets\" placeholder=\"sets\" value=\"" . $row['sets'] . "\" required/> </td>";
-            print "<td> <input type=\"number\" name=\"reps\" placeholder=\"reps\" value=\"" . $row['reps'] . "\" required/> </td>";
-            print "<td> <input type=\"number\" name=\"weight\" placeholder=\"weight\" step=\"0.5\" value=\"" . $row['weight'] . "\" required/> </td>";
-            print "<td> <input type=\"number\" name=\"duration\" placeholder=\"time\" step=\"0.5\" value=\"" . $row['time'] . "\" required/> </td>";
-            print "<td> <textarea name=\"notes\" placeholder=\"notes\">" . $row['notes'] . "</textarea></td>";
+            print "<td> <input type=\"text\" name=\"exercise\" placeholder=\"exercise\" value=\"" . $row['name'] . "\" required oninput=\"showUnsaved('$rowID')\"/> " . 
+                        "<input type=\"hidden\" name=\"eeid\" value=\"" . $row['eeid'] . "\"/> " . 
+                        "<input type=\"hidden\" name=\"eid\" value=\"" . $row['eid'] . "\"/> </td>";
+            print "<td> <input type=\"number\" name=\"sets\" placeholder=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input type=\"number\" name=\"reps\" placeholder=\"reps\" value=\"" . $row['reps'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input type=\"number\" name=\"weight\" placeholder=\"weight\" value=\"" . $row['weight'] . "\" required min = 0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input type=\"number\" name=\"duration\" placeholder=\"time\" value=\"" . $row['time'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <textarea name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('$rowID')\">" . $row['notes'] . "</textarea></td>";
 ?>
             <td class="modifyTD">
                 <i class="bi bi-pencil editBtn" ></i>
             </td>
             <td class="modifyTD">
-                <i class="bi bi-trash delBtn clickable" onclick="openModal('1')"></i>
+                <i class="bi bi-trash delBtn clickable" onclick="openModal('<?php echo $count; ?>')"></i>
             </td>
 <?php
 
             print "</tr>\n";
             $count++;
+            $lid = $row['lid'];
         }
+
+        //print lid only once for use with save/edit/delete
+        print "<input type='hidden' id='lid' value=\"$lid\"/>";
 
     }
     else return;                    //no rows found, could be a new log -> don't display an error message

@@ -159,11 +159,6 @@
 <!-- things like how many calories this log burned relative to your weekly goal -->
 
 
-<script>
-    //Add eventListeners to each row
-    window.onload = rowListeners();
-</script>
-
 </body>
 
 </html>
