@@ -100,23 +100,21 @@ function updateRow($db, $formData)
         $stmt = $db->prepare($sql);
         $res = $stmt->execute($bindParams);
 
-        if($res == false) throw new Exception("Failed to save row to database.");
+        if($res == false) throw new Exception("Failed to save row to database");
 
         //pass a success message back to JS on client's side
         echo json_encode(array(
-            'success' => array(
-                'msg' => 'Exercise saved.'
+                'msg' => 'Success'
             )
-        ));
+        );
     }
     catch (Exception $e) 
     {
         //pass an error message back to JS on client's side
         echo json_encode(array(
-            'error' => array(
                 'msg' => $e->getMessage()
             )
-        ));
+        );
     }
 }
 

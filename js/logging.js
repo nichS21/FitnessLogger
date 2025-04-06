@@ -122,7 +122,7 @@ function showUnsaved(ID)
 function save(rowID)
 {
     let row = document.getElementById(rowID);
-    let eeidInput = row.cells[0].children[1];           //second child of the first <td> of a row is the hidden eeid input
+    let eeidInput = row.cells[1].children[1];           //second child of the second <td> of a row is the hidden eeid input
     let eeid = eeidInput.value;
 
     if(!eeid) saveRowAjax(row);                         //not in database already, must insert
@@ -139,7 +139,7 @@ function saveRowAjax(row)
     //change save button back to edit
     row.cells[6].innerHTML = "<i class=\"bi bi-pencil clickable\" onclick=\"save('" + row.id + "')\">";
 
-    //new row must have eeid added to the first cell
+    //new row must have eeid added to the second cell
 
 
     //on page load -> add event listeners to each row's form that changes edit icon to save with appropriate funciton
@@ -161,9 +161,9 @@ async function editRowAjax(row)
 
     let data = {
         "action" : "updateRow",
-        "eeid" : row.cells[0].children[1].value,
+        "eeid" : row.cells[1].children[1].value,
         "lid" : document.getElementById('lid').value,
-        "eid" : row.cells[0].children[2].value,
+        "eid" : row.cells[0].children[0].value,
         "time" : row.cells[4].children[0].value, 
         "sets" : row.cells[1].children[0].value,
         "reps" : row.cells[2].children[0].value,
@@ -188,8 +188,9 @@ async function editRowAjax(row)
             throw new Error(`Response status: ${response.status}`);
         }
 
-        let serverJson = await response.json();     //response from server in JSON, to check for further messages
-
+        let serverJson = await response.json();     //response from server in JSON, to check for DB errors that do not cause server to fail
+        let msg = serverJson['msg'];
+        if(msg !== "Success") throw new Error(msg);
     }
     catch (error)
     {

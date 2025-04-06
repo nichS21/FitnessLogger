@@ -4,6 +4,33 @@
  * Written by Nick
  */
 
+//Function to output all possible exercises for an HTML select; sets given eid to the selected value
+function exerciseOpts($db, $eid, $rowID)
+{
+    //get all exercises
+    $sql = "SELECT eid, name FROM exercise";
+    $res = $db->query($sql);
+
+    print "<select name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
+
+    while($row = $res->fetch())
+    {
+        $currEid = $row['eid'];
+
+        if($currEid == $eid)
+        {
+            print " <option value=\"$currEid\" selected>" . $row['name'] . "</option>\n";
+        }
+        else
+        {
+            print " <option value=\"$currEid\">" . $row['name'] . "</option>\n";
+        }
+    }
+
+    print "</select>\n";
+
+}
+
  //Function to get and display the the entered exercises for a given log
  function logRows($db, $logID)
  {
@@ -25,10 +52,12 @@
             $rowID = 'row' . $count;
             print "<tr id=$rowID>\n";
 
-            print "<td> <input type=\"text\" name=\"exercise\" placeholder=\"exercise\" value=\"" . $row['name'] . "\" required oninput=\"showUnsaved('$rowID')\"/> " . 
-                        "<input type=\"hidden\" name=\"eeid\" value=\"" . $row['eeid'] . "\"/> " . 
-                        "<input type=\"hidden\" name=\"eid\" value=\"" . $row['eid'] . "\"/> </td>";
-            print "<td> <input type=\"number\" name=\"sets\" placeholder=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td>";
+            exerciseOpts($db, $row['eid'], $rowID);  
+            print "</td>";
+
+            print "<td> <input type=\"number\" name=\"sets\" placeholder=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> " . 
+                        "<input type=\"hidden\" name=\"eeid\" value=\"" . $row['eeid'] . "\"/> </td>";
             print "<td> <input type=\"number\" name=\"reps\" placeholder=\"reps\" value=\"" . $row['reps'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
             print "<td> <input type=\"number\" name=\"weight\" placeholder=\"weight\" value=\"" . $row['weight'] . "\" required min = 0 oninput=\"showUnsaved('$rowID')\"/> </td>";
             print "<td> <input type=\"number\" name=\"duration\" placeholder=\"time\" value=\"" . $row['time'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
