@@ -8,8 +8,44 @@
 
 include_once("dbConnect.php");
 
-//https://stackoverflow.com/questions/64600132/can-i-call-specific-methods-from-file-php-using-javascripts-fetch-function
 
+//Utility function that grabs all exercises that can be selected with a log, for use in <select> element
+function execSelect($db, $formData)
+{
+    try{
+        //get all exercises
+        $sql = "SELECT eid, name FROM exercise";
+        $res = $db->query($sql);
+
+        if($res == false) throw new Exception('Failed to get exercises from database.');
+
+        $rowID = $formData['rowID'];
+
+        $selectString = "<select name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
+
+        while($row = $res->fetch())
+        {
+        $selectString .= " <option value=\"". $row['eid'] . "\">" . $row['name'] . "</option>\n";
+        }
+
+        $selectString .= "</select>\n";
+
+        //encode data to send back
+        echo json_encode(array(
+            'msg' => 'Success',
+            'select' => $selectString
+            )
+        );
+    }
+    catch (Exception $e)
+    {
+        //pass an error message back to JS on client's side
+        echo json_encode(array(
+            'msg' => $e->getMessage()
+            )
+        );
+    }
+}
 
 //Utility function that calculates colories burned for a given entered exercise
 function calcCals($db, $formData)
@@ -36,7 +72,7 @@ function calcCals($db, $formData)
 
     if($row['caloriesPerRep'] <= 0)     //calculate based on time
     {
-        return ($time * $row['caloriesPerMin']) * $sets;
+        return ($time * $row['caloriesPerMinute']) * $sets;
     }
     else                                //calculate based on reps
     {           
@@ -54,7 +90,7 @@ function saveRow($db, $formData)
         $burnedCals = calcCals($db, $formData);
 
         //insert the data
-        $sql = "INSERT INTO entered_exercises (lid, eid, caloriesBurned, time, sets, reps, weight, notes) " .
+        $sql = "INSERT INTO entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) " .
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $bindParams = array($formData['lid'], $formData['eid'], $burnedCals, $formData['time'], $formData['sets'], $formData['reps'], $formData['weight'], $formData['notes']);
@@ -62,23 +98,23 @@ function saveRow($db, $formData)
         $res = $stmt->execute($bindParams);
 
         if($res == false) throw new Exception("Failed to save row to database.");
+        $lastId = $db->lastInsertId();
 
         //pass a success message back to JS on client's side
         echo json_encode(array(
-            'success' => array(
-                'msg' => 'Exercise saved.'
+            'msg' => 'Success', 
+            'eeid' => $lastId  
             )
-        ));
+        );
 
     }
     catch (Exception $e) 
     {
         //pass an error message back to JS on client's side
         echo json_encode(array(
-            'error' => array(
-                'msg' => $e->getMessage()
+            'msg' => $e->getMessage()
             )
-        ));
+        );
     } 
 }
 
@@ -136,6 +172,10 @@ else if($formData['action'] == 'delRow'){
 else if($formData['action'] == 'updateRow')
 {
     updateRow($db, $formData);
+}
+else if($formData['action'] == 'getExercises')
+{
+    execSelect($db, $formData);
 }
 else return;
 

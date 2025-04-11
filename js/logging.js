@@ -3,22 +3,59 @@
 */
 
 //Function that allows user to dynamically add a row to the log table
-function addExercise(){
+async function addExercise(){
     let table = document.getElementById('logTable');
     let newRow = table.insertRow();                     //insert row at end of table
     
     //set ID of new row accordingly - added directly at end of table
-    let ID = countRows();
-    newRow.id = "row" + ID;
+    let count = countRows();
+    newRow.id = "row" + count;
 
-    newRow.innerHTML = "<td>Added Exercise</td>" + 
-                       "<td>4</td>" + 
-                       "<td>5</td>" + 
-                       "<td>405</td>" +
-                       "<td>N/A</td>" + 
-                       "<td>New PR</td>" + 
-                       "<td class=\"modifyTD\"> <i class=\"bi bi-floppy saveBtn clickable\"></i>  </td>" +
-                       "<td class=\"modifyTD\"> <i class=\"bi bi-trash delBtn clickable\" onclick=\"openModal('" + ID + "')\"></i>  </td>";
+    //Get <select> with all options for exercises
+    let data = {
+        "action" : "getExercises",
+        "rowID" : newRow.id
+    }
+
+    //JS fetch call to PHP 
+    const request = new Request("scriptsPHP/loggingAjax.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    let selectString;
+    try
+    {
+        const response = await fetch(request);
+
+        if(!response.ok) {                          //bad status response from server (not in 2xx range)
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        let serverJson = await response.json();     //response from server in JSON: check for errors and get <select> payload
+        let msg = serverJson['msg'];
+        if(msg !== "Success") throw new Error(msg);
+
+        selectString = serverJson['select'];
+    }
+    catch (error)
+    {
+        console.error(error.message);
+    }
+
+    //finally, give new row the proper HTML for functionality
+    newRow.innerHTML ="<td>" + selectString + "</td>" + 
+                    "<td> <input type=\"number\" name=\"sets\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> " +
+                        "<input type=\"hidden\" name=\"eeid\" value=\"\"/> </td>" + 
+                    "<td> <input type=\"number\" name=\"reps\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
+                    "<td> <input type=\"number\" name=\"weight\" value=\"0\" required min = 0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
+                    "<td> <input type=\"number\" name=\"duration\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
+                    "<td> <textarea name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('" + newRow.id + "')\"></textarea></td>" + 
+                    "<td class=\"modifyTD\"> <i class=\"bi bi-floppy saveBtn clickable\" onclick=\"save('" + newRow.id + "')\"></i>  </td>" +
+                    "<td class=\"modifyTD\"> <i class=\"bi bi-trash delBtn clickable\" onclick=\"openModal('" + count + "')\"></i>  </td>";
 }
 
 
@@ -131,28 +168,59 @@ function save(rowID)
 }
 
 //Function that sends a fetch request to loggingAjax.php to save a row
-function saveRowAjax(row)
+async function saveRowAjax(row)
 {
-    //fetch call
-    alert("Row saved");
+    let data = {
+        "action" : "saveRow",
+        "lid" : document.getElementById('lid').value,
+        "eid" : row.cells[0].children[0].value,
+        "time" : row.cells[4].children[0].value, 
+        "sets" : row.cells[1].children[0].value,
+        "reps" : row.cells[2].children[0].value,
+        "weight" : row.cells[3].children[0].value,
+        "notes" : row.cells[5].children[0].value
+    }
 
-    //change save button back to edit
-    row.cells[6].innerHTML = "<i class=\"bi bi-pencil clickable\" onclick=\"save('" + row.id + "')\">";
+    //JS fetch call to PHP 
+    const request = new Request("scriptsPHP/loggingAjax.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
 
-    //new row must have eeid added to the second cell
+    let eeid;
+    try
+    {
+        const response = await fetch(request);
+
+        if(!response.ok) {                          //bad status response from server (not in 2xx range)
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        let serverJson = await response.json();     //response from server in JSON, to check for DB errors that do not cause server to fail
+        let msg = serverJson['msg'];
+        eeid = serverJson['eeid'];
+        if(msg !== "Success") throw new Error(msg);
+    }
+    catch (error)
+    {
+        console.error(error.message);
+        return;
+    }
 
 
-    //on page load -> add event listeners to each row's form that changes edit icon to save with appropriate funciton
-    //whenever save button pressed, grab all input/textarea values within said function
-    // put in json array and do fetch to AJAX on server
-    // read response from server, if success move on, if fail JS alert to USEr
-    // Method succeeds swap back to edit button, instead of save
+    alert("Row saved.");
 
-
-    //new rows must be created with save button by default
+    //change save back to edit button
+    row.cells[6].innerHTML = "<i class=\"bi bi-pencil editBtn\" onclick=\"save('" + row.id + "')\">";
+    
+    //must get eeid hidden input and add the eeid to it, from the database
+    let eeidInput = row.cells[1].children[1];
+    eeidInput.value = eeid;
 }
-//see loggingAjax.php and fetch API docs for how to use
-// If cannot intercept form, need to do form validation to ensure each input has values (except notes)
+
 
 //Function that sends a fetch request to loggingAjax.php to edit a row in the DB
 async function editRowAjax(row)
@@ -195,6 +263,7 @@ async function editRowAjax(row)
     catch (error)
     {
         console.error(error.message);
+        return;
     }
 
 

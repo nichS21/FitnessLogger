@@ -56,11 +56,11 @@ function exerciseOpts($db, $eid, $rowID)
             exerciseOpts($db, $row['eid'], $rowID);  
             print "</td>";
 
-            print "<td> <input type=\"number\" name=\"sets\" placeholder=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> " . 
+            print "<td> <input type=\"number\" name=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> " . 
                         "<input type=\"hidden\" name=\"eeid\" value=\"" . $row['eeid'] . "\"/> </td>";
-            print "<td> <input type=\"number\" name=\"reps\" placeholder=\"reps\" value=\"" . $row['reps'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
-            print "<td> <input type=\"number\" name=\"weight\" placeholder=\"weight\" value=\"" . $row['weight'] . "\" required min = 0 oninput=\"showUnsaved('$rowID')\"/> </td>";
-            print "<td> <input type=\"number\" name=\"duration\" placeholder=\"time\" value=\"" . $row['time'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input type=\"number\" name=\"reps\" value=\"" . $row['reps'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input type=\"number\" name=\"weight\" value=\"" . $row['weight'] . "\" required min = 0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input type=\"number\" name=\"duration\" value=\"" . $row['time'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
             print "<td> <textarea name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('$rowID')\">" . $row['notes'] . "</textarea></td>";
 ?>
             <td class="modifyTD">
