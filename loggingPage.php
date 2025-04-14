@@ -15,11 +15,16 @@
   
 
     <style>
-        th, td{
+        th{
             border: 1px solid black;
             border-collapse: collapse;
             padding: 15px;
         } 
+        td{
+            border: 0.5px solid gray;
+            border-collapse: collapse;
+            padding:10px;
+        }
         table {
             margin-left:auto;
             margin-right:auto;
@@ -28,9 +33,6 @@
         th {
             background-color:deepskyblue;
         } 
-        tr:nth-child(even) {
-            background-color: #D6EEEE; 
-        }
         .modifyTD{
             border: none;
             background-color:azure;
@@ -71,6 +73,15 @@
         }
         .mFooter{
             padding: 10px;
+        }
+        .inputSelect{
+            width: 12vw;
+        }
+        .inputNum{
+            width: 8vw;
+        }
+        .inputText{
+            width: 22vw;
         }
     </style>
 

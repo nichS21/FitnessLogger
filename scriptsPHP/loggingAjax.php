@@ -21,7 +21,7 @@ function execSelect($db, $formData)
 
         $rowID = $formData['rowID'];
 
-        $selectString = "<select name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
+        $selectString = "<select class=\"form-select inputSelect\" name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
 
         while($row = $res->fetch())
         {
@@ -157,7 +157,32 @@ function updateRow($db, $formData)
 //Function to delete a row of a log from the DB
 function delRow($db, $formData)
 {
+    try
+    {
+        //delete the data
+        $sql = "DELETE FROM entered_exercise " . 
+               "WHERE eeid = ? ";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(1, $formData['eeid']);
+        $res = $stmt->execute();
 
+        if($res == false) throw new Exception("Failed to delete row in database");
+
+        //pass a success message back to JS on client's side
+        echo json_encode(array(
+                'msg' => 'Success'
+            )
+        );
+    }
+    catch (Exception $e) 
+    {
+        //pass an error message back to JS on client's side
+        echo json_encode(array(
+                'msg' => $e->getMessage()
+            )
+        );
+    }
 }
 
 //If this file requested, see which function to call
@@ -166,12 +191,12 @@ $formData = json_decode(file_get_contents('php://input'), true);    //Must use t
 if($formData['action'] == 'saveRow'){
     saveRow($db, $formData);
 }
-else if($formData['action'] == 'delRow'){
-    delRow($db, $formData);
-}
 else if($formData['action'] == 'updateRow')
 {
     updateRow($db, $formData);
+}
+else if($formData['action'] == 'delRow'){
+    delRow($db, $formData);
 }
 else if($formData['action'] == 'getExercises')
 {

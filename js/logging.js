@@ -48,12 +48,12 @@ async function addExercise(){
 
     //finally, give new row the proper HTML for functionality
     newRow.innerHTML ="<td>" + selectString + "</td>" + 
-                    "<td> <input type=\"number\" name=\"sets\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> " +
-                        "<input type=\"hidden\" name=\"eeid\" value=\"\"/> </td>" + 
-                    "<td> <input type=\"number\" name=\"reps\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
-                    "<td> <input type=\"number\" name=\"weight\" value=\"0\" required min = 0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
-                    "<td> <input type=\"number\" name=\"duration\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
-                    "<td> <textarea name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('" + newRow.id + "')\"></textarea></td>" + 
+                    "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"sets\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> " +
+                         "<input type=\"hidden\" name=\"eeid\" value=\"\"/> </td>" + 
+                    "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"reps\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
+                    "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"weight\" value=\"0\" required min = 0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
+                    "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"duration\" value=\"0\" required min=0 oninput=\"showUnsaved('" + newRow.id + "')\"/> </td>" + 
+                    "<td> <textarea class=\"form-control inputText\" name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('" + newRow.id + "')\"></textarea></td>" + 
                     "<td class=\"modifyTD\"> <i class=\"bi bi-floppy saveBtn clickable\" onclick=\"save('" + newRow.id + "')\"></i>  </td>" +
                     "<td class=\"modifyTD\"> <i class=\"bi bi-trash delBtn clickable\" onclick=\"openModal('" + count + "')\"></i>  </td>";
 }
@@ -61,6 +61,11 @@ async function addExercise(){
 
 //Function that deletes a row out of a the log table
 function deleteExercise(rowID){
+    //delete from database
+    let row = document.getElementById('row' + rowID);
+    delRowAjax(row);
+
+    //delete row on page
     let table = document.getElementById('logTable');
     table.deleteRow(rowID); 
 
@@ -274,8 +279,46 @@ async function editRowAjax(row)
 }
 
 //Function that sends a fetch request to loggingAjax.php to delete a row
-function delRowAjax(row)
+async function delRowAjax(row)
 {
-    ///have to link back with deleteExercise function and the modal
+    //handle edge case - new row added to page, but never saved before delete (nothing to delete from DB)
+    let eeid = row.cells[1].children[1].value;
+    if(!eeid)
+    {
+        return;
+    } 
+
+
+    let data = {
+        "action" : "delRow",
+        "eeid" : eeid
+    }
+
+    //JS fetch call to PHP 
+    const request = new Request("scriptsPHP/loggingAjax.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    try
+    {
+        const response = await fetch(request);
+
+        if(!response.ok) {                          //bad status response from server (not in 2xx range)
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        let serverJson = await response.json();     //response from server in JSON, to check for DB errors that do not cause server to fail
+        let msg = serverJson['msg'];
+        if(msg !== "Success") throw new Error(msg);
+    }
+    catch (error)
+    {
+        console.error(error.message);
+        return;
+    }
 }
 

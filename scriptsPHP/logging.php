@@ -11,7 +11,7 @@ function exerciseOpts($db, $eid, $rowID)
     $sql = "SELECT eid, name FROM exercise";
     $res = $db->query($sql);
 
-    print "<select name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
+    print "<select class=\"form-select inputSelect\" name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
 
     while($row = $res->fetch())
     {
@@ -37,7 +37,8 @@ function exerciseOpts($db, $eid, $rowID)
     $sql = $db->prepare(
         "SELECT * " .
         "FROM entered_exercise NATURAL JOIN exercise " .
-        "WHERE lid = ?"
+        "WHERE lid = ? " . 
+        "ORDER BY eeid ASC"
     );
     $sql->bindParam(1, $logID);
     $result = $sql->execute();
@@ -56,12 +57,12 @@ function exerciseOpts($db, $eid, $rowID)
             exerciseOpts($db, $row['eid'], $rowID);  
             print "</td>";
 
-            print "<td> <input type=\"number\" name=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> " . 
+            print "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"sets\" value=\"" . $row['sets'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> " . 
                         "<input type=\"hidden\" name=\"eeid\" value=\"" . $row['eeid'] . "\"/> </td>";
-            print "<td> <input type=\"number\" name=\"reps\" value=\"" . $row['reps'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
-            print "<td> <input type=\"number\" name=\"weight\" value=\"" . $row['weight'] . "\" required min = 0 oninput=\"showUnsaved('$rowID')\"/> </td>";
-            print "<td> <input type=\"number\" name=\"duration\" value=\"" . $row['time'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
-            print "<td> <textarea name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('$rowID')\">" . $row['notes'] . "</textarea></td>";
+            print "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"reps\" value=\"" . $row['reps'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"weight\" value=\"" . $row['weight'] . "\" required min = 0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <input class=\"form-control inputNum\" type=\"number\" name=\"duration\" value=\"" . $row['time'] . "\" required min=0 oninput=\"showUnsaved('$rowID')\"/> </td>";
+            print "<td> <textarea class=\"form-control inputText\" name=\"notes\" placeholder=\"notes\" oninput=\"showUnsaved('$rowID')\">" . $row['notes'] . "</textarea></td>";
 ?>
             <td class="modifyTD">
                 <i class="bi bi-pencil editBtn" ></i>
@@ -130,7 +131,7 @@ function exerciseOpts($db, $eid, $rowID)
             <?php logRows($db, $logID); ?>
         </table>
 
-        <i class="bi bi-plus-square clickable" onclick="addExercise()" style="font-size:50px; margin-left:8%"></i>
+        <i class="bi bi-plus-square clickable" onclick="addExercise()" style="font-size:50px; margin-left:4%"></i>
     </div>
 <?php
 
