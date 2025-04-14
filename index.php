@@ -12,7 +12,7 @@
     .lBtn{
         font-family: "Helevetica Neue", sans-serif;
         border-radius: 5px;
-        border-style: solid;
+        border-style: none;
         color: black;
         text-decoration: none;
         padding: 5px;
@@ -21,6 +21,9 @@
         font-size:20px;
         display:inline-block;
         text-align:center;
+    }
+    .lBtn:hover{
+        background-color:rgb(57, 137, 184);
     }
     .login{
         background-color:#D3D3D3;

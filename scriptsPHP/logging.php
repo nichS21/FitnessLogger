@@ -85,10 +85,8 @@ function exerciseOpts($db, $eid, $rowID)
  }
 
  //Function that displays the log portion of the page. Shows up only after a valid date with a log is provided by user
- function displayPage($db, $uid, $formData)
+ function displayPage($db, $uid, $date)
  {
-    $date = $formData['date']; 
-
     //check if entered date points to a log
     $sql = "SELECT * " . 
            "FROM Log " .
@@ -106,9 +104,9 @@ function exerciseOpts($db, $eid, $rowID)
         print "<h3>An error has occured. Please try again.</h3>\n";
         return;
     }
-    else if($rowCount != 1)                  //No log found for this date, prompt user if they wish to create one
+    else if($rowCount != 1)                         //No log found for this date, prompt user if they wish to create one
     {
-        print "<h3>No log found for '" . $formData['date'] . "'</h3>\n";
+        print "<h3>No log found for '" . $date . "'</h3> </br>\n";
         createLog($db, $uid, $date);
         return;                    
     }
@@ -139,8 +137,42 @@ function exerciseOpts($db, $eid, $rowID)
 
  //Function to create a log if the user chooses. Will call displayPage upon success
  function createLog($db, $uid, $date)
- {
-    print "<h3>Create a log</h3>";
+ { ?>
+
+    <h3 class="text-center">Create a log below <b>OR</b> Select another date</h3>
+
+    <div class="p-4 shadow mx-auto" style="background-color:azure; width:50vw; height:auto;">
+        <form method="POST" action="scriptsPHP\createLog.php">
+        <p class="fs-4 fw-bold">Create a log from?</p>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="create" id="scratch" value="scratch">
+                <label class="form-check-label" for="scratch">
+                    Scratch
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="create" id="template" value="template">
+                <label class="form-check-label" for="template">
+                    Class Template
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="create" id="previous" value="previous">
+                <label class="form-check-label" for="previous">
+                    Another Log
+                </label>
+            </div>
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-2 justify-content-md-end">
+                    <button type="submit" class="gnrlBtn">Create</button>
+                </div>
+            </div>
+            <input type="hidden" name='date' value='<?php echo $date; ?>'>
+        </form>
+    <div>
+
+<?php
  }
 
 

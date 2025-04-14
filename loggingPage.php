@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -118,20 +120,24 @@
             <button class="gnrlBtn" type="button" data-bs-toggle="collapse" data-bs-target="#searchDate" aria-expanded="false" aria-controls="searchDate">View/Create Log</button>
 
             <div class="collapse p-2" id="searchDate">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col-md-6 d-inline">
-                            <form method="POST" action="?func=log">
-                                <label for="date"> Choose a date: </label>
-                                <input type="date" name="date" id="date" min="2025-01-01" required/>
-                                <button class="gnrlBtn" type="submit">Search</button>
-
+                <div class="card card-body p-3" style="height:auto; width:40vw">
+                    <form method="POST" action="?func=log">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="date"> Choose a date: </label>
+                                    <input class="form-control form-control-lg" style="width:20vw" type="date" name="date" id="date" min="2025-01-01" required/>
+                                </div>
+                            </div>
                             
-                            </form>
+                            <div class="row mt-3">
+                                <div class="col-md-10"></div>
+                                <div class="col-md-2 justify-content-md-end">
+                                    <button class="gnrlBtn" type="submit">Search</button>
+                                </div>
+                            </div>
                         </div>
-                        <!-- JS to display result of search -->
-                        <div class="col-md-6 d-inline site-color">This div will hold the search result and the option to create a log (from scratch/template) if none exist.</div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -146,7 +152,6 @@
     <?php 
     
         if(isset($_GET['func']))  $func = $_GET['func'];
-          
         switch($func)
         {
             case 'no log':
@@ -154,9 +159,19 @@
                 break;
             
             case 'log': 
+                //Get date submitted, could be from $_SESSION or $_POST (brand new log or date search on page respectively)
+                $date;
+                if(isset($_SESSION['date']))
+                {
+                    $date = $_SESSION['date'];
+                    unset($_SESSION['date']);       //unset date after displaying this log, do not want this value stuck in session data
+                } 
+                else if(isset($_POST['date'])) $date = $_POST['date'];
+                else $date = "";
+
                 //TODO:
                 //HARDCODED UID, remove once login complete
-                displayPage($db, 2, $_POST);
+                displayPage($db, 2, $date);
                 //displayPage($db, $_SESSION['uid'], $_POST);
                 break;
         }
