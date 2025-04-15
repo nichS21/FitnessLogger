@@ -84,7 +84,7 @@
                     </form> <br/>
 
                     <p class="text-center fs-3" style="font-weight:bold">OR</p> <br/>
-                    <a href="#" class="lBtn site-color">Sign Up</a>
+                    <a href="signup.php" class="lBtn site-color">Sign Up</a>
                 </div>
             </div>
         </div>

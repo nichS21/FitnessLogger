@@ -1,6 +1,11 @@
 <?php 
+session_start();
+
 include_once("scriptsPHP/dbConnect.php");
 
+function debug($str) {
+    print "<DIV class='debug'>$str</DIV>\n";
+}
 /*
 * Function to include needed CSS/JS imports for any page on site
 */
@@ -44,32 +49,42 @@ function genNavBar()
 <?php
 }   // genNavBar
 
-function createClass($uid, $className, $classDes) {
-    include_once("dbConnect.php");
-    global $db;
-
-    if (empty($className)) {
-        echo "Class name is required!";
-    return;
+//add user function
+function addUser($db, $age, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
+    if (!$db) {
+        debug("Database connection failed.");
     }
 
-    try {
-        $sql = "INSERT INTO Course 
-                (uid, name, description)
-                VALUES (?, ?, ?)";
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $db->prepare($sql);
-        
-        $stmt->execute([
-            $uid,
-            $className,
-            $classDes
-        ]);
-        
-        echo "New course created successfully";
-    } catch (PDOException $e) {
-        echo "Error creating course: " . $e->getMessage();
+    $query = "INSERT INTO User (age, weight, email, height, username, password, weeklyCalGoal) VALUES ($age, $weight, '$email', $height, '$username', '$hashedPassword', $weeklyCalGoal)";
+    debug($query);  
+
+    $res = $db->query($query);
+
+    if ($res) {
+        debug("User added successfully.");
+    } else {
+        debug("Error adding user: " . $db->errorInfo()[2]);
     }
 }
 
-?>
+function processLogin($db, $formData) {
+    $username = $formData['username'];
+
+
+    $query = "SELECT name FROM User WHERE username";
+
+    $res = $db->query($query);
+
+    if ($res == false || $res->rowCount() != 1) {
+        header("refresh:2;url=dashboard.php");
+        print "<P>Login as $uid failed</P>\n";    
+    }
+    else {
+        header("refresh:2;url=dashboard.php");
+        $row = $res->fetch();
+        $_SESSION['username'] = $username;
+        print "<P>Successfully logged in</P>\n";
+    }
+}
