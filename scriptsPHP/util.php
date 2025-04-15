@@ -1,4 +1,5 @@
 <?php 
+include_once("scriptsPHP/dbConnect.php");
 
 /*
 * Function to include needed CSS/JS imports for any page on site
@@ -42,5 +43,33 @@ function genNavBar()
 </div>  
 <?php
 }   // genNavBar
+
+function createClass($uid, $className, $classDes) {
+    include_once("dbConnect.php");
+    global $db;
+
+    if (empty($className)) {
+        echo "Class name is required!";
+    return;
+    }
+
+    try {
+        $sql = "INSERT INTO Course 
+                (uid, name, description)
+                VALUES (?, ?, ?)";
+
+        $stmt = $db->prepare($sql);
+        
+        $stmt->execute([
+            $uid,
+            $className,
+            $classDes
+        ]);
+        
+        echo "New course created successfully";
+    } catch (PDOException $e) {
+        echo "Error creating course: " . $e->getMessage();
+    }
+}
 
 ?>
