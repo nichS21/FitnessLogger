@@ -1,5 +1,4 @@
 <?php
-session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -11,7 +10,7 @@ neededImports();
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="css/courseCreate.css"> 
+    <link rel="stylesheet" href="css/creation.css"> 
     <title>Create Workout Class</title>
 </head>
 
@@ -41,7 +40,7 @@ neededImports();
         <input type="hidden" name="class_img" id="selectedImage">
 
         <small class="text-muted">Pictures from <a href="https://unsplash.com" target="_blank">Unsplash</a></small>
-
+        <br>
         <label for="template">Choose a Template:</label>
         <select id="template" name="template" class="form-control">
             <option value="">-- Select Template --</option>
@@ -61,17 +60,8 @@ neededImports();
     $className   = $_POST['name'];
     $classDes    = $_POST['description'];
     
-    // Handle file upload
-    ?>
-    <label for="imageSearch">Search a Free Class Image:</label>
-    <input type="text" id="imageSearch" class="form-control mb-2" placeholder="e.g. yoga, HIIT, strength training">
-    <div id="imageResults" class="d-flex flex-wrap gap-2 mb-3"></div>
-    <input type="hidden" name="class_img" id="selectedImage">
-    <small class="text-muted">Powered by <a href="https://unsplash.com" target="_blank">Unsplash</a></small>
-    
-    <?php
     // Call function to insert into database
-    createClass($uid, $className, $classDes);
+    createClass($db, $uid, $className, $classDes);
     }
     ?>
 

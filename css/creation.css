@@ -1,3 +1,4 @@
+/* === Form Container Styling === */
 .form-container {
     background-color: #ffffff;
     padding: 40px;
@@ -7,18 +8,21 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
+/* === Grid Layout with Labels on Left, Inputs on Right === */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 24px 40px; 
+    gap: 24px 40px; /* vertical and horizontal gaps */
     align-items: center;
 }
 
+/* === Label Styling === */
 .form-grid label {
     text-align: right;
     font-weight: 500;
 }
 
+/* === Input Styling === */
 .form-control {
     border-radius: 8px;
     border: 1px solid #cfd8dc;
@@ -26,10 +30,6 @@
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box;
-}
-
-input[type="file"].form-control {
-    padding: 8px 0;
 }
 
 .form-control:focus {
@@ -62,3 +62,25 @@ h2 {
     text-align: center;
     margin-bottom: 30px;
 }
+
+#imageResults img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+  }
+
+  #imageResults img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  #imageResults {
+    grid-column: span 2;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+  }

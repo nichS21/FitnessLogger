@@ -88,3 +88,26 @@ function processLogin($db, $formData) {
         print "<P>Successfully logged in</P>\n";
     }
 }
+
+function createClass($db, $uid, $className, $classDes) {
+
+    try {
+        $sql = "INSERT INTO Course 
+                (uid, name, description)
+                VALUES (?, ?, ?)";
+
+        $stmt = $db->prepare($sql);
+        
+        $stmt->execute([
+            $uid,
+            $className,
+            $classDes
+        ]);
+        
+        echo "New course created successfully";
+    } catch (PDOException $e) {
+        echo "Error creating course: " . $e->getMessage();
+    }
+}
+
+?>
