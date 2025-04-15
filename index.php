@@ -44,7 +44,7 @@
     <div class="container-fluid site-color p-3 text-white"> 
         <div class="row">
             <div class="col-md-1">
-                <img src="../images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
+                <img src="images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
             </div>
             <div class="col-md-9">
                 <p class="fs-1" style="display:inline">AMNT Fitness Logger</p>
@@ -87,7 +87,7 @@
                     </form> <br/>
 
                     <p class="text-center fs-3" style="font-weight:bold">OR</p> <br/>
-                    <a href="#" class="lBtn site-color">Sign Up</a>
+                    <a href="signup.php" class="lBtn site-color">Sign Up</a>
                 </div>
             </div>
         </div>
