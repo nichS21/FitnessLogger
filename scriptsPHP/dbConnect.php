@@ -1,9 +1,9 @@
 <?php
 //connect to database
-$server = "cray.cs.gettysburg.edu";
+$server = "localhost";
 $dbase  = "s25_amnt";
-$user   = "stacni01";
-$pass   = "stacni01";
+$user   = "root";
+$pass   = "root";
 $dsn    = "mysql:host=$server;dbname=$dbase";       //data source name
 
 try 
@@ -12,9 +12,9 @@ try
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    //print "<h3>Sucessfully connected to the database.</h3>\n";
+    // print "<h3>Sucessfully connected to the database.</h3>\n";
 
-    //try query to double check 
+    // // try query to double check 
     // $sql = "SELECT * FROM User";
     // $result = $db->query($sql);
 
