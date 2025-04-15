@@ -3,7 +3,7 @@
 <head>
     <title> Workout Logging </title>
     <?php 
-        include_once("scriptsPHP\util.php"); 
+        include_once("scriptsPHP/util.php"); 
         neededImports();
     ?>
 
