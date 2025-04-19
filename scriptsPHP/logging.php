@@ -31,6 +31,46 @@ function exerciseOpts($db, $eid, $rowID)
 
 }
 
+//Function to get select list of templates for this user (from their enrolled classes)
+function templateSelect($db, $uid)
+{
+
+}
+
+//Function to get select list of previous logs for this user
+function previousSelect($db, $uid)
+{
+    $sql = "SELECT lid, date FROM Log WHERE uid = ?";
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1, $uid);
+    $res = $stmt->execute();
+
+    if(!$res || $stmt->rowCount() < 1)
+    {
+        //Display select with no options
+        ?>
+            <select class="form-select" style="width:50%" name="prevDate">
+                <option value="-1">No dates to select</option>
+            </select>
+        <?php
+    }
+    else
+    {
+        //Display all available previous log dates
+        print "<select class=\"form-select\" style=\"width:50%\" name=\"prevDate\">\n";
+
+        while($row = $stmt->fetch())
+        {
+            $temp =  new DateTime($row['date']);
+            $date = date_format($temp, "Y-m-d");                 //format date without hours, minutes, seconds
+            print " <option value=\"" . $row['lid'] . "\"selected>" . $date . "</option>\n";
+        }
+
+        print "</select>\n";
+    }
+}
+
  //Function to get and display the the entered exercises for a given log
  function logRows($db, $logID)
  {
@@ -47,7 +87,6 @@ function exerciseOpts($db, $eid, $rowID)
     {
         //display each row
         $count = 1;
-        $lid  = -1;                     //start with dummy value
         while($row = $sql->fetch())
         {
             $rowID = 'row' . $count;
@@ -74,11 +113,10 @@ function exerciseOpts($db, $eid, $rowID)
 
             print "</tr>\n";
             $count++;
-            $lid = $row['lid'];
         }
 
         //print lid only once for use with save/edit/delete
-        print "<input type='hidden' id='lid' value=\"$lid\"/>";
+        print "<input type='hidden' id='lid' value=\"$logID\"/>";
 
     }
     else return;                    //no rows found, could be a new log -> don't display an error message
@@ -145,24 +183,34 @@ function exerciseOpts($db, $eid, $rowID)
         <form method="POST" action="scriptsPHP\createLog.php">
         <p class="fs-4 fw-bold">Create a log from?</p>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="create" id="scratch" value="scratch">
+                <input class="form-check-input" type="radio" name="create" id="scratch" onclick="updateField()" value="scratch">
                 <label class="form-check-label" for="scratch">
                     Scratch
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="create" id="template" value="template">
+                <input class="form-check-input" type="radio" name="create" id="template" onclick="updateField()" value="template">
                 <label class="form-check-label" for="template">
                     Class Template
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="create" id="previous" value="previous">
+                <input class="form-check-input" type="radio" name="create" id="previous" onclick="updateField()" value="previous">
                 <label class="form-check-label" for="previous">
                     Another Log
                 </label>
             </div>
-            <div class="row">
+
+            <!-- Dynamic form inputs for creating from template or previous log -->
+            <div class="m-2" style="display:none" id="templateSelect">
+                <?php echo "template select goes here"; //templateSelect($db, $uid); ?>
+            </div>
+
+            <div class="m-2" style="display:none" id="previousSelect">
+                <?php previousSelect($db, $uid); ?>
+            </div>
+
+            <div class="row m-2">
                 <div class="col-md-10"></div>
                 <div class="col-md-2 justify-content-md-end">
                     <button type="submit" class="gnrlBtn">Create</button>

@@ -230,8 +230,6 @@ async function saveRowAjax(row)
 //Function that sends a fetch request to loggingAjax.php to edit a row in the DB
 async function editRowAjax(row)
 {
-    //create form validation function? 
-
     let data = {
         "action" : "updateRow",
         "eeid" : row.cells[1].children[1].value,
@@ -320,5 +318,40 @@ async function delRowAjax(row)
         console.error(error.message);
         return;
     }
+}
+
+//Function to handle dynamically displaying input fields in create log form
+function updateField()
+{
+    //get selected radio button in form
+    let selectedBtn = document.querySelector('input[name="create"]:checked');
+    let id = selectedBtn.id;
+
+    //get divs
+    let templateDiv = document.getElementById("templateSelect");
+    let previousDiv = document.getElementById("previousSelect");
+
+    switch(id)
+    {
+        case "scratch":
+            //hide other two divs (in case either is shown)
+            templateDiv.style.display = "none";
+            previousDiv.style.display = "none";
+            break;
+        case "template":
+            //display template div, hide other 
+            templateDiv.style.display = "block";
+            previousDiv.style.display = "none";
+            break;
+        case "previous":
+            //display previous div, hide other
+            templateDiv.style.display = "none";
+            previousDiv.style.display = "block";
+            break;
+        default:
+            break;              //do nothing
+
+    }
+
 }
 

@@ -181,9 +181,7 @@
     
  </div>
 
-<!-- Weekly Goal Progress -->
-<!-- things like how many calories this log burned relative to your weekly goal -->
-
+ <!-- Feedback (if exists) to be displayed here -->
 
 </body>
 
