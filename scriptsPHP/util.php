@@ -78,20 +78,18 @@ function addUser($db, $age, $weight, $email, $height, $username, $password, $wee
 
 function processLogin($db, $formData) {
     $username = $formData['username'];
-
-
-    $query = "SELECT name FROM User WHERE username";
-
+    
+    $query = "SELECT uid, username FROM User WHERE username = '$username'";
     $res = $db->query($query);
-
+    
     if ($res == false || $res->rowCount() != 1) {
         header("refresh:2;url=dashboard.php");
-        print "<P>Login as $uid failed</P>\n";    
-    }
-    else {
-        header("refresh:2;url=dashboard.php");
+        print "<p>Login as $username failed</p>\n";    
+    } else {
         $row = $res->fetch();
+        $uid = $row['uid']; 
         $_SESSION['username'] = $username;
-        print "<P>Successfully logged in</P>\n";
+        print "<p>Successfully logged in as $username (User ID: $uid)</p>\n";
+        header("refresh:2;url=dashboard.php");
     }
 }
