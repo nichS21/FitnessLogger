@@ -1,9 +1,17 @@
+<?php
+session_start();
+include_once("scriptsPHP/util.php");
+include_once("scriptsPHP/dbconnect.php"); 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    processLogin($db, $_POST);
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title> AMNT Fitness Logger </title>
     <?php 
-        include_once("scriptsPHP/util.php"); 
         neededImports();
     ?>
 </head>
