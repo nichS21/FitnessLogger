@@ -6,6 +6,7 @@
 
 session_start();
 include_once("dbConnect.php");
+include_once("logging.php");        //for calcCals function
 
 if(isset($_POST['create']))
 {
@@ -63,22 +64,74 @@ function createBlank($db, $uid, $data)
 //Creates a new log, prefilled with data from a template
 function createTemplate($db, $uid, $data)
 {
-    //must contain the new template ID
     //make the new log 
-    // $sql = "INSERT INTO log (uid, date) " . 
-    // "VALUES (?, ?)";
+    $sql = "INSERT INTO log (uid, date, tid) " . 
+    "VALUES (?, ?, ?)";
 
-    // $stmt = $db->prepare($sql);
-    // $stmt->bindParam(1, $uid);
-    // $stmt->bindParam(2, $data['date']);
-    // $res = $stmt->execute(); 
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1, $uid);
+    $stmt->bindParam(2, $data['date']);
+    $stmt->bindParam(3, $data['selectedTemp']);
+    $res = $stmt->execute(); 
 
-    // if(!$res) exit();                           //if query fails, quit executing code
+    if(!$res) exit();                           //if query fails, quit executing code
+    
+    $newID = $db->lastInsertId();               //new log's ID
+
 
     //prefill from the template 
+    $sql = "SELECT eid, time, sets, reps, weight " .
+            "FROM templated_exercise " . 
+            "WHERE tid = ?";
 
-    //TODO
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1, $data['selectedTemp']);
+    $res = $stmt->execute();
     
+    if(!$res) exit();                           //if query fails, quit executing code
+
+    //put data from template into new one
+    $sql = "INSERT INTO entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) \n" .
+           "VALUES \n";
+
+    $numRows = $stmt->rowCount();
+    $row = -1;
+    $burnedCals = -1;
+    for($i = 0; $i < $numRows - 1; $i++)
+    {
+        $row = $stmt->fetch();
+
+        try
+        {
+            $burnedCals = calcCals($db, $row);
+        }
+        catch (Exception $e)
+        {
+            $burnedCals = 0;
+        }
+
+        $sql .= "(" . $newID . ", " . $row['eid'] . ", " . $burnedCals . ", " . $row['time'] 
+                    . ", " . $row['sets'] . ", " . $row['reps'] . ", " . $row['weight'] . ", \"\"), \n";
+    }
+
+    //last row doesn't need comma: (x, x, x, x ...)
+    $row = $stmt->fetch();
+
+    try
+    {
+        $burnedCals = calcCals($db, $row);
+    }
+    catch (Exception $e)
+    {
+        $burnedCals = 0;
+    }
+
+    $sql .= "(" . $newID . ", " . $row['eid'] . ", " . $burnedCals . ", " . $row['time'] 
+            . ", " . $row['sets'] . ", " . $row['reps'] . ", " . $row['weight'] . ", \"\")";
+
+    //insert new data
+    $stmt = $db->prepare($sql);
+    $res = $stmt->execute();
 }
 
 //Creates a new log, prefilled with data from previously created log
@@ -95,7 +148,7 @@ function createPrevious($db, $uid, $data)
 
     if(!$res) exit();                           //if query fails, quit executing code
     
-    $newID = $db->lastInsertId();              //new log's ID
+    $newID = $db->lastInsertId();               //new log's ID
 
 
     //prefill with entered exercises from the last log

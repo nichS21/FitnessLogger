@@ -7,6 +7,7 @@
 */
 
 include_once("dbConnect.php");
+include_once("logging.php");
 
 
 //Utility function that grabs all exercises that can be selected with a log, for use in <select> element
@@ -46,40 +47,6 @@ function execSelect($db, $formData)
         );
     }
 }
-
-//Utility function that calculates colories burned for a given entered exercise
-function calcCals($db, $formData)
-{
-    //get values for calculations
-    $eid = $formData['eid'];
-    $time = $formData['time'];
-    $reps = $formData['reps'];
-    //$weight = $formData['weight'];
-    $sets = $formData['sets'];
-
-    //get calories burned per rep OR calories burned per minute for this exercise
-    $sql = "SELECT * FROM exercise WHERE eid = ?";
-
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(1, $eid);
-    $res = $stmt->execute();
-
-    //return caloriesBurned
-    if($res == false) throw new Exception('Failed to calculate calories.');
-
-
-    $row = $stmt->fetch();
-
-    if($row['caloriesPerRep'] <= 0)     //calculate based on time
-    {
-        return ($time * $row['caloriesPerMinute']) * $sets;
-    }
-    else                                //calculate based on reps
-    {           
-        return ($reps * $row['caloriesPerRep']) * $sets;
-    }
-}
-
 
 //Function to save a row of a log to the DB
 function saveRow($db, $formData)

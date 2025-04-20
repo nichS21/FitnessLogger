@@ -177,11 +177,8 @@
         }
      
     ?>
-
-    
+  
  </div>
-
- <!-- Feedback (if exists) to be displayed here -->
 
 </body>
 
