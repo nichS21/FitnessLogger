@@ -47,6 +47,7 @@ main {
     display: flex;
     gap: 25px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .course {
@@ -77,7 +78,7 @@ main {
 
 .buttons {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 15px;
 }
 

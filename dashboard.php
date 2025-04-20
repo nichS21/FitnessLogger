@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 
 include_once("scriptsPHP/util.php");
 include("util.php");
@@ -12,10 +12,12 @@ include("util.php");
 // print_r($result);
 // print "<div>$result</div>";
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-    genCourse($db, $uid);
-}
+$uid = 2;
+
+// if (isset($_GET['uid'])) {
+//     $uid = $_GET['uid'];
+//     genCourse($db, $uid);
+// }
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +41,6 @@ if (isset($_GET['uid'])) {
             <select id="user" name="user">
                 <?php genUsers($db); ?>
             </select>
-
         </div>
     </header>
 
@@ -47,22 +48,16 @@ if (isset($_GET['uid'])) {
         <section class="courses">
             <h2><u>My courses:</u></h2>
             <div class="course-grid">
-                <!-- <div class="course">
-                    <img src="images/arm.jpg" alt="Arms">
-                    
-                </div> -->
-                <div class="course">
-                    <img src="images/arm.jpg" alt="Arms">
-                    <p>W1121: Arms</p>
-                </div>
-                <div class="course">
-                    <img src="images/leg.jpg" alt="Legs">
-                    <p>W1322: Legs</p>
-                </div>
-                <div class="course">
-                    <img src="images/core.jpg" alt="Core">
-                    <p>W1352: Core</p>
-                </div>
+                <?php
+                genCourse($db, $uid);
+                // if (isset($_GET['uid'])) {
+                //     $uid = $_GET['uid'];
+                //     genCourse($db, $uid);
+                // }
+                // else {
+                //     echo "<p>You do not have any course so far</p>";
+                // }
+                ?>
             </div>
             <div class="track">
                 <div class="progress-bar" data-label="Calories..."></div>

@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-include_once("scriptsPHP/dbConnect.php");
+include_once("dbConnect.php");
 
 function debug($str) {
     print "<DIV class='debug'>$str</DIV>\n";
@@ -79,7 +79,7 @@ function processLogin($db, $formData) {
 
     if ($res == false || $res->rowCount() != 1) {
         header("refresh:2;url=dashboard.php");
-        print "<P>Login as $uid failed</P>\n";    
+        // print "<P>Login as $uid failed</P>\n";    
     }
     else {
         header("refresh:2;url=dashboard.php");

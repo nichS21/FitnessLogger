@@ -1,9 +1,9 @@
 <?php
 include_once("scriptsPHP/dbConnect.php");
 
-function debug($str) {
-    print "<div class='debug'>$str</div>";
-}
+// function debug($str) {
+//     print "<div class='debug'>$str</div>";
+// }
 
 function genUsers($db) {
     $query = "SELECT uid, username FROM User";
@@ -33,8 +33,12 @@ function genCourse($db, $uid) {
     else {
         while ($row = $res->fetch()) {
             $name = $row['name'];
-            // print "<P>$table</P>\n";
-            echo "<div class='course'><P>$name</P></div>\n";
+            
+            echo "
+            <div class='course'>
+                <img src='images/core.jpg' alt='$name'>
+                <p>$name</p>
+            </div>\n";
         }
     }
 }
