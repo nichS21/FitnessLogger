@@ -7,10 +7,16 @@ function debug($str) {
 }
 /*
 * Function to include needed CSS/JS imports for any page on site
+* Made by Nick
 */
 function neededImports() 
 { ?>
+     <!-- Required meta tags for Bootstrap -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" >
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="css/site.css" rel="stylesheet">
 <?php
@@ -19,6 +25,7 @@ function neededImports()
 /*
 * Generate navbar at top of page (intended to be used throughout site).
 * NOTE: Not used on landing page to eliminate unnecessary 'Account' dropdown button
+* Made by Nick
 */
 function genNavBar()
 {
@@ -69,6 +76,8 @@ function addUser($db, $age, $weight, $email, $height, $username, $password, $wee
 }
 
 function processLogin($db, $username, $password) {
+    session_unset();
+
     if (!$db) {
         debug("Database connection failed.");
     }
@@ -96,4 +105,3 @@ function processLogin($db, $username, $password) {
     }
 }
 
-session_unset();
