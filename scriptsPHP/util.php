@@ -1,5 +1,4 @@
 <?php 
-session_start();
 
 include_once("scriptsPHP/dbConnect.php");
 
@@ -69,20 +68,32 @@ function addUser($db, $age, $weight, $email, $height, $username, $password, $wee
     }
 }
 
-function processLogin($db, $formData) {
-    $username = $formData['username'];
-    
-    $query = "SELECT uid, username FROM User WHERE username = '$username'";
+function processLogin($db, $username, $password) {
+    if (!$db) {
+        debug("Database connection failed.");
+    }
+    $query = "SELECT uid, username, password FROM User WHERE username = '$username'";
     $res = $db->query($query);
-    
     if ($res == false || $res->rowCount() != 1) {
-        header("refresh:2;url=dashboard.php");
+        header("refresh:2;url=index.php");
         print "<p>Login as $username failed</p>\n";    
-    } else {
+    } 
+    else {
         $row = $res->fetch();
         $uid = $row['uid']; 
-        $_SESSION['username'] = $username;
-        print "<p>Successfully logged in as $username (User ID: $uid)</p>\n";
-        header("refresh:2;url=dashboard.php");
+        $hashedPassword = $row['password'];
+
+        if (password_verify($password, $hashedPassword)) {
+            session_regenerate_id(true);
+            $_SESSION['username'] = $username;
+            $_SESSION['uid'] = $uid;
+            print "<p>Successfully logged in as $username (User ID: $uid)</p>\n";
+            header("refresh:2;url=dashboard.php");
+        } else {
+            header("refresh:2;url=index.php");
+            print "<p>Login as $username failed</p>\n";    
+        }
     }
 }
+
+session_unset();

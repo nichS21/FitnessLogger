@@ -1,10 +1,17 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 include_once("scriptsPHP/util.php");
-include_once("scriptsPHP/dbconnect.php"); 
+include_once("scriptsPHP/dbConnect.php"); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    processLogin($db, $_POST);
+    $username       = trim($_POST["username"]);
+    $password       = trim($_POST["password"]);
+    processLogin($db, $username, $password);
+    header("Location: dashboard.php");
+    exit();
 }
 ?>
 <!DOCTYPE html>
