@@ -52,12 +52,12 @@ INSERT INTO Entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight
   (4, 4,  80, 10, 1, 0, 0, 'Challenging, but finished.'); 
 
 INSERT INTO Templated_exercise (tid, eid, time, sets, reps, weight) VALUES
-  (1, 1,  0, 3, 15,  0),   
-  (1, 2,  0, 3, 10,  0),   
+  (1, 1,  0, 3, 15, 0),   
+  (1, 2,  0, 3, 10, 0),   
   (2, 3, 20, 1, 0, 0),  
   (2, 4, 15, 1, 0, 0),  
-  (3, 1,  0, 4, 10,  0),   
-  (3, 2,  0, 4, 10,  0),   
+  (3, 1,  0, 4, 10, 0),   
+  (3, 2,  0, 4, 10, 0),   
   (4, 3, 10, 1, 0, 0),  
   (4, 4, 10, 1, 0, 0);
 

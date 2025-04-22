@@ -76,6 +76,8 @@ function addUser($db, $age, $weight, $email, $height, $username, $password, $wee
 }
 
 function processLogin($db, $username, $password) {
+    session_unset();
+
     if (!$db) {
         debug("Database connection failed.");
     }
@@ -103,4 +105,3 @@ function processLogin($db, $username, $password) {
     }
 }
 
-session_unset();

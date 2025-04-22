@@ -116,7 +116,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 p-4">
-            <a class="gnrlBtn" href="index.php">To Dashboard</a>
+            <a class="gnrlBtn" href="dashboard.php">To Dashboard</a>
             <button class="gnrlBtn" type="button" data-bs-toggle="collapse" data-bs-target="#searchDate" aria-expanded="false" aria-controls="searchDate">View/Create Log</button>
 
             <div class="collapse p-2" id="searchDate">
@@ -169,10 +169,8 @@
                 else if(isset($_POST['date'])) $date = $_POST['date'];
                 else $date = "";
 
-                //TODO:
-                //HARDCODED UID, remove once login complete
-                displayPage($db, 2, $date);
-                //displayPage($db, $_SESSION['uid'], $_POST);
+                
+                displayPage($db, $_SESSION['uid'], $date);
                 break;
         }
      

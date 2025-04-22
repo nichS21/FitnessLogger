@@ -13,8 +13,7 @@ if(isset($_POST['create']))
     //Which method of create?
     $method = $_POST['create'];
 
-    //TODO: use actual session date not hardcoded uid
-    $uid = 2;//$_SESSION['uid'];
+    $uid = $_SESSION['uid'];
     if($method == 'scratch')                    //create new blank log
     {
         createBlank($db, $uid, $_POST);
