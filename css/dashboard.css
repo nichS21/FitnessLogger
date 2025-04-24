@@ -1,4 +1,4 @@
-body {
+/* body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f5f6fa;
@@ -32,7 +32,7 @@ header {
 .user-info img {
     height: 30px;
     margin-right: 8px;
-}
+} */
 
 main {
     padding: 30px;
@@ -40,7 +40,7 @@ main {
 }
 
 .courses h2 {
-    margin-bottom: 15px;
+    margin: 20px;
 }
 
 .course-grid {
@@ -48,6 +48,7 @@ main {
     gap: 25px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    padding: 20px;
 }
 
 .course {
@@ -82,17 +83,18 @@ main {
     gap: 15px;
 }
 
-.buttons button {
+.button {
     padding: 12px 18px;
     background-color: #fcbfa7;
     border: none;
     border-radius: 25px;
     font-size: 16px;
     cursor: pointer;
+    text-align: center;
     transition: background-color 0.2s;
 }
 
-.buttons button:hover {
+.buttons .button:hover {
     background-color: #fda074;
 }
 
@@ -102,7 +104,7 @@ main {
 
 .track {
     position: absolute;
-    right: 5px;
+    right: 2px;
     top: 0; 
     margin: 10px;
 }
@@ -126,7 +128,7 @@ main {
     width: 70%;
     min-width: 2rem;
     max-width: calc(100% - 1em);
-    background-color: blue;
+    background-color: skyblue;
     border-radius: 1em;
     padding: 1em;
 }

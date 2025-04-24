@@ -24,16 +24,39 @@ function genUsers($db) {
 }
 
 function genCourse($db, $uid) {
-    $query = "SELECT name from Course NATURAL JOIN User WHERE uid=$uid";
+    $query = "SELECT name from Course AS c JOIN Enrollment AS e
+              WHERE e.uid=$uid AND e.courseID = c.courseID";
+
     $res = $db->query($query);
     
-    if ($res == false) {
-        print "<P>Fail to generate courses</P>";
+    if ($res == false || $res->rowCount() < 1) {
+        print "<P>You do not have course so far</P>";
     }
     else {
         while ($row = $res->fetch()) {
             $name = $row['name'];
             
+            echo "
+            <div class='course'>
+                <img src='images/core.jpg' alt='$name'>
+                <p>$name</p>
+            </div>\n";
+        }
+    }
+}
+
+function genAllCourse($db) {
+    $query = "SELECT name from Course";
+
+    $res = $db->query($query);
+
+    if ($res == false || $res->rowCount() < 1) {
+        print "<p>No course has been created</p>";
+    } 
+    else {
+        while ($row = $res->fetch()) {
+            $name = $row['name'];
+
             echo "
             <div class='course'>
                 <img src='images/core.jpg' alt='$name'>

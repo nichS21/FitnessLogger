@@ -47,7 +47,7 @@ function genNavBar()
     </div>
 </div>  
 <?php
-}   // genNavBar
+}
 
 //add user function
 function addUser($db, $age, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
