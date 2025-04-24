@@ -38,7 +38,7 @@ function genNavBar()
                     Account
                 </button>
                 <ul class="dropdown-menu acctColor" aria-labelledby="accountDropdown">
-                    <li><a class="dropdown-item acctColor" href="#">My Account</a></li>
+                    <li><a class="dropdown-item acctColor" href="account.php">My Account</a></li>
                     <li><a class="dropdown-item acctColor" href="#">Logout</a></li>
                 </ul>
             </div>
@@ -94,6 +94,22 @@ function processLogin($db, $username, $password) {
             print "<p>Login as $username failed</p>\n";    
         }
     }
+}
+
+function showDetails($db, $uid) {
+    $stmt = $db->prepare("SELECT age, weight, email, height, username, weeklyCalGoal FROM User WHERE uid = ?");
+    $stmt->execute([$uid]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function logout() {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit();
 }
 
 session_unset();
