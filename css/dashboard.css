@@ -13,17 +13,6 @@ header {
     align-items: center;
 }
 
-.logo img {
-    height: 30px;
-    margin-right: 10px;
-    vertical-align: middle;
-}
-
-.logo span {
-    font-size: 22px;
-    font-weight: bold;
-}
-
 .user-info {
     display: flex;
     align-items: center;
@@ -92,6 +81,10 @@ main {
     cursor: pointer;
     text-align: center;
     transition: background-color 0.2s;
+}
+
+.buttons .button a {
+    text-decoration: none;
 }
 
 .buttons .button:hover {
