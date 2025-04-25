@@ -96,8 +96,6 @@ CREATE TABLE Templated_exercise (
 	sets INT NOT NULL,
 	reps INT,
 	weight INT,
-    FOREIGN KEY (tid) REFERENCES Workout_template(tid),
-    FOREIGN KEY (eid) REFERENCES Exercise(eid) ON DELETE CASCADE
 );
 
 

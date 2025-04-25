@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 include("scriptsPHP/util.php");
 neededImports();
@@ -85,13 +85,12 @@ neededImports();
             $stmt->execute([$uid, $newCourseID, $tname]);
             $exists = $stmt->fetchColumn();
 
-        if (!$exists) {
             $stmt = $db->prepare("INSERT INTO Workout_template (uid, courseID, tname) VALUES (?, ?, ?)");
             $stmt->execute([$uid, $newCourseID, $tname]);
         }
     }
     showToast("Class and templates successfully created!", "success");
-}
+
 ?>
     <script>
     // Image search from Unsplash

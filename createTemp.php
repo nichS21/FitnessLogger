@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 include_once("scriptsPHP/util.php"); 
 neededImports();
@@ -147,7 +147,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     modal.show();
   }
 
-  // Add templated exercise to the DB
   function addExerciseToTemplate() {
     const eid = document.getElementById('modalEid').value;
     const name = document.getElementById('modalExerciseName').innerText;
@@ -162,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     bootstrap.Modal.getInstance(document.getElementById('exerciseModal')).hide();
   }
 
-  
+
   function renderExerciseTable() {
     const table = document.getElementById('templateTableBody');
     table.innerHTML = '';
