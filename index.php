@@ -1,12 +1,24 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+session_start();
+include_once("scriptsPHP/util.php");
+include_once("scriptsPHP/dbConnect.php"); 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username       = trim($_POST["username"]);
+    $password       = trim($_POST["password"]);
+    processLogin($db, $username, $password);
+    header("Location: dashboard.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title> AMNT Fitness Logger </title>
     <?php 
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
-        include_once("scriptsPHP/util.php"); 
         neededImports();
     ?>
 </head>
@@ -15,7 +27,7 @@
     .lBtn{
         font-family: "Helevetica Neue", sans-serif;
         border-radius: 5px;
-        border-style: solid;
+        border-style: none;
         color: black;
         text-decoration: none;
         padding: 5px;
@@ -24,6 +36,9 @@
         font-size:20px;
         display:inline-block;
         text-align:center;
+    }
+    .lBtn:hover{
+        background-color:rgb(57, 137, 184);
     }
     .login{
         background-color:#D3D3D3;

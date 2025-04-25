@@ -2,6 +2,10 @@
     background-color:#43a7e0;
 }
 
+.site-color-2nd{
+    background-color:#1c6995
+}
+
 .site-font{
     font-family: "Helevetica Neue", sans-serif;
 }
@@ -9,7 +13,7 @@
 .acctBtn{
     font-family: "Helevetica Neue", sans-serif;
     border-radius: 5px;
-    border-style: solid;
+    border-style: none;
     color: black;
     text-decoration: none;
     padding: 5px;
@@ -18,8 +22,49 @@
     font-size:20px;
     display:inline-block;
     text-align:center;
-    background-color:lightgrey 
+    background-color:#D3D3D3 
 }
+
 .acctColor{
     background-color:#D3D3D3;
+}
+
+.gnrlBtn{
+    font-family: "Helevetica Neue", sans-serif;
+    border-radius: 5px;
+    border-style:none;
+    color: black;
+    text-decoration: none;
+    padding: 7.5px;
+    height: auto;
+    font-size:15px;
+    display:inline-block;
+    text-align:center;
+    background-color:lightgrey 
+}
+.gnrlBtn:hover{
+    background-color: #a9a9a9
+}
+
+.shadow{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.38);    
+}
+
+.saveBtn{
+    font-size:40px;
+    color:#41f265;
+}
+
+.delBtn{
+    font-size:40px;
+    color:#f24141;
+}
+
+.editBtn{
+    font-size:40px;
+    color:#706f6f
+}
+
+.clickable{
+    cursor:pointer;
 }

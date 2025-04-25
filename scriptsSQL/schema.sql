@@ -48,7 +48,7 @@ CREATE TABLE Log (
 	lid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	uid INT NOT NULL,
 	feedback TINYTEXT,
-	date DATETIME NOT NULL,
+	date DATETIME default now(),
 	tid INT NULL,
     FOREIGN KEY (uid) REFERENCES User(uid)
 );
