@@ -1,10 +1,12 @@
 <?php 
 
+session_start();
 include_once("dbConnect.php");
 
 function debug($str) {
     print "<DIV class='debug'>$str</DIV>\n";
 }
+
 /*
 * Function to include needed CSS/JS imports for any page on site
 * Made by Nick
@@ -30,6 +32,27 @@ function neededImports()
 function genNavBar()
 {
 ?>
+    <div class="container-fluid site-color p-3 text-white"> 
+        <div class="row">
+            <div class="col-md-1">
+                <img src="images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
+            </div>
+            <div class="col-md-9">
+                <p class="fs-1" style="display:inline">AMNT Fitness Logger</p>
+            </div>
+            <div class="col-md-2">
+                <div class="dropdown">
+                    <button class="acctBtn mx-auto d-block dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Account
+                    </button>
+                    <ul class="dropdown-menu acctColor" aria-labelledby="accountDropdown">
+                        <li><a class="dropdown-item acctColor" href="#">My Account</a></li>
+                        <li><a class="dropdown-item acctColor" href="#">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>  
         
 <div class="container-fluid site-color p-3 text-white"> 
     <div class="row">
@@ -55,7 +78,7 @@ function genNavBar()
 <?php
 }
 
-//add user function
+// Add user function
 function addUser($db, $age, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
     if (!$db) {
         debug("Database connection failed.");
