@@ -26,11 +26,11 @@ function neededImports()
 */
 function genNavBar()
 {
-?>
+?>      
     <div class="container-fluid site-color p-3 text-white"> 
         <div class="row">
             <div class="col-md-1">
-                <img src="images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
+                <img src="../images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
             </div>
             <div class="col-md-9">
                 <p class="fs-1" style="display:inline">AMNT Fitness Logger</p>
