@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Workout Logging </title>
     <?php 
-        include_once("scriptsPHP\util.php"); 
-        include_once("scriptsPHP\logging.php");
+        include_once("scriptsPHP/util.php"); 
+        include_once("scriptsPHP/logging.php");
         neededImports();
 
         $func = "no log";                       //default to no log, must select a date

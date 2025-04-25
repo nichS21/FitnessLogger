@@ -19,8 +19,6 @@ $uid = 2;
     <meta charset="UTF-8">
     <title>AMNT Fitness Logger</title>
     <link rel="stylesheet" href="css/dashboard.css">
-    <!-- <script src="script.js"></script> -->
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 </head>
 
 <body>
@@ -42,7 +40,7 @@ $uid = 2;
         <section class="actions">
             <div class="buttons">
                 <button class="acctBtn mx-auto d-block" type="button" aria-expanded="false">
-                    <a href='/dashboard.php'>Back</a>
+                    <a class="gnrlBtn" href="dashboard.php">Back</a>
                 </button>
             </div>
         </section>
