@@ -16,6 +16,7 @@ neededImports();
 <body class="site-font">
     <?php genNavBar(); ?>
 
+    <!-- Form to create a new workout course -->
     <div class="form-container">
         <h2>New Workout Course</h2>
         <form name="createCourse" method="POST" class="form-grid" autocomplete="off" enctype="multipart/form-data">
@@ -63,6 +64,7 @@ neededImports();
     </div>
 
     <?php 
+    // Add form data to database
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $uid         = $_SESSION['uid'] ?? 2;
         $className   = $_POST['name'];
@@ -92,6 +94,7 @@ neededImports();
 }
 ?>
     <script>
+    // Image search from Unsplash
     const accessKey = "53M4w0Qe-lhJwfLm2Wmc4D0j0sTSjGu0vGjrwDGp7zQ";
 
     document.getElementById('imageSearch').addEventListener('input', async (e) => {

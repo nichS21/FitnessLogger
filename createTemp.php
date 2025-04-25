@@ -20,12 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     try {
-        // Always create a new Workout_template
+        // Create a new workout template
         $stmt = $db->prepare("INSERT INTO Workout_template (uid, courseID, tname) VALUES (?, ?, ?)");
         $stmt->execute([$uid, $courseID, $templateTitle]);
         $templateId = $db->lastInsertId();
 
-        // Insert exercises for this template
+        // Insert exercises for template
         $stmt = $db->prepare("INSERT INTO Templated_exercise (tid, eid, time, sets, reps, weight) VALUES (?, ?, ?, ?, ?, ?)");
         foreach ($exerciseData as $ex) {
             $stmt->execute([
@@ -50,12 +50,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html>
 <head>
     <title>Create Workout Template</title>
-    <?php neededImports(); ?>
 </head>
 <body class="site-font">
-<?php genNavBar(); ?>
+  <?php genNavBar(); ?>
 
-<div class="container mt-5">
+  <div class="container mt-5">
     <h2 class="text-center">New Workout Template</h2>
     <form method="POST" class="mt-4" autocomplete="off">
         <div class="form-group">
@@ -81,6 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <?php endforeach; ?>
         </div>
 
+        <!-- Template preview -->
         <h4 class="mt-4">Workout Template Preview</h4>
         <table class="table table-bordered">
             <thead>
@@ -104,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </form>
 </div>
 
+<!-- Modal for adding exercise details -->
 <div class="modal fade" id="exerciseModal" tabindex="-1" aria-labelledby="modalExerciseLabel" aria-hidden="true">
     <div class="modal-dialog">
             <div class="modal-content">
@@ -146,6 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     modal.show();
   }
 
+  // Add templated exercise to the DB
   function addExerciseToTemplate() {
     const eid = document.getElementById('modalEid').value;
     const name = document.getElementById('modalExerciseName').innerText;
@@ -160,6 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     bootstrap.Modal.getInstance(document.getElementById('exerciseModal')).hide();
   }
 
+  
   function renderExerciseTable() {
     const table = document.getElementById('templateTableBody');
     table.innerHTML = '';
