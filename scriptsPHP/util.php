@@ -1,5 +1,4 @@
 <?php 
-session_start();
 
 include_once("dbConnect.php");
 
@@ -8,10 +7,16 @@ function debug($str) {
 }
 /*
 * Function to include needed CSS/JS imports for any page on site
+* Made by Nick
 */
 function neededImports() 
 { ?>
+     <!-- Required meta tags for Bootstrap -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" >
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="../css/site.css" rel="stylesheet">
 <?php
@@ -20,6 +25,7 @@ function neededImports()
 /*
 * Generate navbar at top of page (intended to be used throughout site).
 * NOTE: Not used on landing page to eliminate unnecessary 'Account' dropdown button
+* Made by Nick
 */
 function genNavBar()
 {
@@ -69,22 +75,33 @@ function addUser($db, $age, $weight, $email, $height, $username, $password, $wee
     }
 }
 
-function processLogin($db, $formData) {
-    $username = $formData['username'];
+function processLogin($db, $username, $password) {
+    session_unset();
 
-
-    $query = "SELECT name FROM User WHERE username";
-
-    $res = $db->query($query);
-
-    if ($res == false || $res->rowCount() != 1) {
-        header("refresh:2;url=dashboard.php");
-        // print "<P>Login as $uid failed</P>\n";    
+    if (!$db) {
+        debug("Database connection failed.");
     }
+    $query = "SELECT uid, username, password FROM User WHERE username = '$username'";
+    $res = $db->query($query);
+    if ($res == false || $res->rowCount() != 1) {
+        header("refresh:2;url=index.php");
+        print "<p>Login as $username failed</p>\n";    
+    } 
     else {
-        header("refresh:2;url=dashboard.php");
         $row = $res->fetch();
-        $_SESSION['username'] = $username;
-        print "<P>Successfully logged in</P>\n";
+        $uid = $row['uid']; 
+        $hashedPassword = $row['password'];
+
+        if (password_verify($password, $hashedPassword)) {
+            session_regenerate_id(true);
+            $_SESSION['username'] = $username;
+            $_SESSION['uid'] = $uid;
+            print "<p>Successfully logged in as $username (User ID: $uid)</p>\n";
+            header("refresh:2;url=dashboard.php");
+        } else {
+            header("refresh:2;url=index.php");
+            print "<p>Login as $username failed</p>\n";    
+        }
     }
 }
+
