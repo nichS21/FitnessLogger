@@ -69,18 +69,44 @@ h2 {
     object-fit: cover;
     border-radius: 8px;
     transition: transform 0.2s ease;
-  }
+}
 
-  #imageResults img:hover {
+#imageResults img:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
+}
 
-  #imageResults {
+#imageResults {
     grid-column: span 2;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
     justify-content: flex-start;
-  }
+}
+
+.toast {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background-color: #323232;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1000;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.toast.error {
+    background-color: #e74c3c;
+}
+
+.toast.success {
+    background-color: #2ecc71;
+}
