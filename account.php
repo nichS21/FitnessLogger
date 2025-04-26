@@ -5,7 +5,7 @@ session_start();
 //     exit();
 // }
 
-ini_set('display_errors', 1);
+ini_set('display_errors', $_SESSION['uid']);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
@@ -14,7 +14,7 @@ include_once("scriptsPHP/dbConnect.php");
 include_once("scriptsPHP/util.php");
 
 // $userDetails = showDetails($db, $_SESSION['uid']);
-$userDetails = showDetails($db, 1);
+$userDetails = showDetails($db, $_SESSION['uid']);
 
 ?>
 <!DOCTYPE html>

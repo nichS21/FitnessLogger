@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php session_start(); 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+?>
 
 <!DOCTYPE html>
 <html>
@@ -6,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Workout Logging </title>
     <?php 
-        include_once("scriptsPHP\util.php"); 
-        include_once("scriptsPHP\logging.php");
+        include_once("scriptsPHP/dbConnect.php");
+        include_once("scriptsPHP/util.php");
         neededImports();
 
         $func = "no log";                       //default to no log, must select a date
