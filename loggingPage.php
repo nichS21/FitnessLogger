@@ -122,7 +122,7 @@
             <button class="gnrlBtn" type="button" data-bs-toggle="collapse" data-bs-target="#searchDate" aria-expanded="false" aria-controls="searchDate">View/Create Log</button>
 
             <div class="collapse p-2" id="searchDate">
-                <div class="mx-auto" style="height:auto; width:80vw;">
+                <div class="mx-auto" style="height:auto; width:75vw;">
                     <form method="POST" action="?func=log">
                         <div class="container">
                             <div class="row align-items-center">
@@ -144,8 +144,7 @@
 
                                 <div class="col-md-6">
                                     <div class="card">
-                                        <div class="card-header fw-bold">Your most recent log(s)</div>
-                                        <div class="card-body"> <?php fivePrevLogs($db, $uid); ?> </div>
+                                        <?php fivePrevLogs($db, $uid); ?>
                                     </div>
                                 </div>
                                 
@@ -153,9 +152,6 @@
                         </div>
                     </form>
                 </div>
-
-              
-
             </div>
         </div>
     </div>

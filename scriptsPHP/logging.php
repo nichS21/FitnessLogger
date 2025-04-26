@@ -329,10 +329,13 @@ function fivePrevLogs($db, $uid)
 
     if(!$res || $stmt->rowCount() < 1) 
     {
-        print "You haven't created any logs yet.";
+        print "<div class=\"card-header fw-bold\">Your most recent log(s)</div> \n";
+        print "<div class=\"card-body\">You haven't created any logs yet.</div> \n";
     }
     else
     {
+        print "<div class=\"card-header fw-bold\">Your " . $stmt->rowCount() . " most recent log(s)</div> \n";
+        print "<div class=\"card-body\"> \n";
         print "<ul> \n";
 
         //loop over dates to make a bulleted list
@@ -344,6 +347,7 @@ function fivePrevLogs($db, $uid)
         }
 
         print "</ul> \n";
+        print "</div> \n";
     }
 }
 
