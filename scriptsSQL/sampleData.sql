@@ -12,12 +12,12 @@ INSERT INTO DelUser(uid) VALUES
 INSERT INTO Admin(uid) VALUES
   (2);
  
-INSERT INTO Course(courseID, uid, name, description) VALUES
-	(111, 2, "Push-ups", "The push-up is a classic bodyweight exercise for the upper body, with the benefit that you don’t need any equipment to perform it."),
-	(112, 2, "Squat Jerk", "The squat jerk is a variant of jerk that differs from the split jerk in that you keep your feet parallel throughout the lift."),
-	(113, 2, "Dumbbell Shoulder Press", "The dumbbell shoulder press is a variant of the barbell overhead press. The dumbbells increase the demand for shoulder stability, and can also enable a longer range of motion."),
-	(114, 2, "Belt Squats", "The belt squat is a good alternative to the Barbell Squat. The movement is similar, but the weight placement helps you put less tension on your lower back."),
-  (115, 2, "Deleted Course", "This course should no longer be visible to users");
+INSERT INTO Course(courseID, uid, name, description, class_length, unsplash_url) VALUES
+	(111, 2, "Push-ups", "The push-up is a classic bodyweight exercise for the upper body, with the benefit that you don’t need any equipment to perform it.", 2, "placeholder"),
+	(112, 2, "Squat Jerk", "The squat jerk is a variant of jerk that differs from the split jerk in that you keep your feet parallel throughout the lift.", 4, "placeholder"),
+	(113, 2, "Dumbbell Shoulder Press", "The dumbbell shoulder press is a variant of the barbell overhead press. The dumbbells increase the demand for shoulder stability, and can also enable a longer range of motion.", 2, "placeholder"),
+	(114, 2, "Belt Squats", "The belt squat is a good alternative to the Barbell Squat. The movement is similar, but the weight placement helps you put less tension on your lower back.", 8, "placeholder"),
+  (115, 2, "Deleted Course", "This course should no longer be visible to users", 16, "placeholder");
 
 INSERT INTO Log(lid, uid, feedback, date, tid) VALUES
 	(1, 2, 'Excellent work, keep up the good progress.', '2025-02-10', 2),
