@@ -2,10 +2,10 @@ USE s25_amnt;
 
 CREATE TABLE User (
 	uid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	age INT NOT NULL,
+	birthDay DATE NOT NULL,
 	weight INT NOT NULL,
 	email VARCHAR(150) NOT NULL,
-	height INT NOT NULL,
+	height FLOAT NOT NULL,
 	username VARCHAR(150) NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	weeklyCalGoal INT NOT NULL
