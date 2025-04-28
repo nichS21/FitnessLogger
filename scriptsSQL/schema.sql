@@ -2,10 +2,10 @@ USE s25_amnt;
 
 CREATE TABLE User (
 	uid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	age INT NOT NULL,
+	birthDay DATE NOT NULL,
 	weight INT NOT NULL,
 	email VARCHAR(150) NOT NULL,
-	height INT NOT NULL,
+	height FLOAT NOT NULL,
 	username VARCHAR(150) NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	weeklyCalGoal INT NOT NULL
@@ -76,7 +76,7 @@ CREATE TABLE Entered_exercise (
 
 CREATE TABLE Workout_template (
     tid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    tname VARCHAR(255),
+    tname VARCHAR(255) NOT NULL,
     uid INT NOT NULL,
     courseID INT NOT NULL,
     FOREIGN KEY (uid) REFERENCES User(uid),
@@ -96,7 +96,6 @@ CREATE TABLE Templated_exercise (
 	sets INT NOT NULL,
 	reps INT,
 	weight INT,
+    FOREIGN KEY (tid) REFERENCES Workout_template(tid),
+    FOREIGN KEY (eid) REFERENCES Exercise(eid) ON DELETE CASCADE
 );
-
-
-

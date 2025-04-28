@@ -1,24 +1,71 @@
 <!DOCTYPE html>
 <?php
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-include("scriptsPHP/util.php");
+include_once("scriptsPHP/classes_util.php");
 neededImports();
+$uid = $_SESSION['uid'] ?? 1;
+
+// Handle form POST
+$showModal = false; // default: don't show modal
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {   
+    $className   = $_POST['name'];
+    $classDes    = $_POST['description'];
+    $classLength = $_POST['class_length'];
+    $templateNames = $_POST['template'] ?? [];
+    $imageUrl    = $_POST['class_img'] ?? '';
+
+    // Insert course
+    createClass($db, $uid, $className, $classDes, $classLength, $imageUrl);
+    $newCourseID = $db->lastInsertId(); 
+    $_SESSION['courseid'] = $newCourseID;
+    $_SESSION['latest_course_id'] = $newCourseID;
+
+     $tname = $_POST['template'] ?? null;
+    if ($tname) {
+        $stmt = $db->prepare("SELECT tid FROM Workout_template WHERE uid = ? AND courseID = ? AND tname = ?");
+        $stmt->execute([$uid, $newCourseID, $tname]);
+        $exists = $stmt->fetchColumn();
+
+        $stmt = $db->prepare("INSERT INTO Workout_template (uid, courseID, tname) VALUES (?, ?, ?)");
+        $stmt->execute([$uid, $newCourseID, $tname]);
+    }
+    
+}
+
+// Load templates to show in dropdown
+$stmt = $db->prepare("SELECT DISTINCT tname FROM Workout_template WHERE uid = ? ORDER BY tname ASC");
+$stmt->execute([$uid]);
+$templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <html>
 <head>
     <link rel="stylesheet" href="css/creation.css"> 
     <title>Create Workout Class</title>
+    <script src="js/classes.js" defer></script>
 </head>
 
 <body class="site-font">
+    <?php if (count($templates) === 0): ?>
+        <script>
+        // This runs immediately after HTML loads
+        if (confirm('⚡ No templates found.\n\nWould you like to create a template now?')) {
+            window.location.href = 'createTemp.php';
+        }    
+        else {
+            alert('You need to create a template before you can create a class.');
+        }
+        </script>
+    <?php endif; ?>
+
     <?php genNavBar(); ?>
 
-    <!-- Form to create a new workout course -->
     <div class="form-container">
         <h2>New Workout Course</h2>
+
         <form name="createCourse" method="POST" class="form-grid" autocomplete="off" enctype="multipart/form-data">
 
             <label for="class_name">Class Name:</label>
@@ -38,107 +85,44 @@ neededImports();
 
             <input type="hidden" name="class_img" id="selectedImage">
 
-            <small class="text-muted">Pictures from <a href="https://unsplash.com" target="_blank">Unsplash</a></small>
+            <small class="text-muted">
+                Pictures from <a href="https://unsplash.com" target="_blank">Unsplash</a>
+            </small>
 
             <label for="template">Choose a Template:</label>
-            <select id="template" name="template[]" class="form-control">
+            <select id="template" name="template[]" class="form-select">
                 <?php
-                $query = "SELECT tname FROM Workout_template";
-                $res = $db->query($query);
-                if ($res) {
-                    $seenTemplates = [];
-                    while ($row = $res->fetch()) {
+                if (count($templates) > 0) {
+                    echo '<option value="" disabled selected>Select a Template</option>';
+                    foreach ($templates as $row) {
                         $name = htmlspecialchars(trim($row['tname']));
-                        if (in_array($name, $seenTemplates)) continue;
-                        $seenTemplates[] = $name;
-                        echo "<option value='$name'>$name</option>\n";
+                        echo "<option value=\"$name\">$name</option>\n";
                     }
                 } else {
-                    debug("Database error loading templates.");
+                    echo '<option value="" disabled selected>No templates available</option>';
                 }
                 ?>
             </select>
 
             <button type="submit" class="btn btn-primary mt-3">Create Class</button>
+
         </form>
     </div>
 
-    <?php 
-    // Add form data to database
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $uid         = $_SESSION['uid'] ?? 2;
-        $className   = $_POST['name'];
-        $classDes    = $_POST['description'];
-        $classLength = $_POST['class_length'];
-        $templateNames = $_POST['template'] ?? [];
-        $imageUrl    = $_POST['class_img'] ?? '';
-
-        // Insert course
-        createClass($db, $uid, $className, $classDes, $classLength, $imageUrl);
-        $newCourseID = $db->lastInsertId(); 
-        $_SESSION['courseid'] = $newCourseID;
-        $_SESSION['latest_course_id'] = $newCourseID;
-
-        $tname = $_POST['template'] ?? null;
-        if ($tname) {
-            $stmt = $db->prepare("SELECT tid FROM Workout_template WHERE uid = ? AND courseID = ? AND tname = ?");
-            $stmt->execute([$uid, $newCourseID, $tname]);
-            $exists = $stmt->fetchColumn();
-
-            $stmt = $db->prepare("INSERT INTO Workout_template (uid, courseID, tname) VALUES (?, ?, ?)");
-            $stmt->execute([$uid, $newCourseID, $tname]);
-        }
-    }
-    showToast("Class and templates successfully created!", "success");
-
-?>
+    <!-- Scripts -->
     <script>
-    // Image search from Unsplash
-    const accessKey = "53M4w0Qe-lhJwfLm2Wmc4D0j0sTSjGu0vGjrwDGp7zQ";
+    document.addEventListener('DOMContentLoaded', function() {
+        validateClassTemp(); 
 
-    document.getElementById('imageSearch').addEventListener('input', async (e) => {
-        const query = e.target.value.trim();
-        const container = document.getElementById('imageResults');
-        if (!query) return container.innerHTML = "";
-
-        container.innerHTML = "<p>Searching...</p>";
-
-        const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=10&client_id=${accessKey}`);
-        const data = await res.json();
-        container.innerHTML = "";
-        data.results.forEach(photo => {
-            const img = document.createElement('img');
-            img.src = photo.urls.thumb;
-            img.alt = photo.alt_description;
-            img.style.cursor = 'pointer';
-            img.style.border = '2px solid transparent';
-            img.style.borderRadius = '8px';
-            img.onclick = async () => {
-                // Highlight selected image
-                document.querySelectorAll('#imageResults img').forEach(i => i.style.border = '2px solid transparent');
-                img.style.border = '2px solid #2196f3';
-
-                // Set the image URL in the hidden form field
-                document.getElementById('selectedImage').value = photo.urls.regular;
-
-                // Track the download (Unsplash requirement)
-                const downloadURL = photo.links.download_location;
-                const fullURL = downloadURL.includes('?')
-                ? `${downloadURL}&client_id=${accessKey}`
-                : `${downloadURL}?client_id=${accessKey}`;
-
-            try {
-                await fetch(fullURL); // async tracking event
-                console.log("Download tracked successfully.");
-            } catch (err) {
-        console.error("Error tracking download:", err);
-    }
-};
-
-            container.appendChild(img);
-        });
+        <?php if (count($templates) === 0): ?>
+            if (confirm('⚡ No templates found.\n\n Please make a template now.')) {
+                window.location.href = 'createTemp.php';
+            } 
+            else {
+                alert('You need to create a template before you can make a class.');
+            }
+        <?php endif; ?>
     });
-    </script>
 
 </body>
 </html>
