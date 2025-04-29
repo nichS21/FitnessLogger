@@ -55,15 +55,6 @@ function validateClassTemp() {
 
     if (!form || !templateSelect || !submitButton) return;
 
-    // Style the error
-    errorMessage.style.color = 'red';
-    errorMessage.style.fontSize = '0.9rem';
-    errorMessage.style.marginTop = '5px';
-    errorMessage.style.display = 'none';
-    errorMessage.textContent = 'Please select a template before creating the class.';
-
-    templateSelect.parentNode.appendChild(errorMessage);
-
     // Disable submit button initially
     submitButton.disabled = true;
 
@@ -91,5 +82,43 @@ function validateClassTemp() {
 document.addEventListener('DOMContentLoaded', function () {
     selectImages();
     validateClassTemp();
+
+    document.getElementById('selectedImage').value = "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MzY1NzV8MHwxfHNlYXJjaHwxMHx8c3RyZW5ndGh8ZW58MHx8fHwxNzQ1NjgyMDg3fDA&ixlib=rb-4.0.3&q=80&w=1080";
+
+    if (noTemplates) {
+        setTimeout(() => {
+            showNoTemplatesModal();
+        }, 500); 
+    }
 });
+
+// --- Show custom popup if no templates exist ---
+function showNoTemplatesModal() {
+    const modal = document.getElementById('noTemplatesModal');
+    const overlay = document.getElementById('modalOverlay');
+    const createBtn = document.getElementById('createTemplateBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    if (!modal || !overlay) return;
+
+    modal.style.display = 'block';
+    overlay.style.display = 'block';  
+
+    createBtn.onclick = function() {
+        window.location.href = 'createTemp.php';
+    };
+
+    cancelBtn.onclick = function() {
+        modal.style.display = 'none';
+        overlay.style.display = 'none'; 
+    };
+
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+        overlay.style.display = 'none'; 
+    };
+}
+
+
 
