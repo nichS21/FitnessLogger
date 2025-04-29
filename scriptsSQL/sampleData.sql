@@ -88,13 +88,13 @@ INSERT INTO Exercise(eID, name, caloriesPerRep, caloriesPerMinute) VALUES
   (54, 'Barbell Snatch', 0.6, 0),
   (55, 'Resistance Band Rows', 0, 7);
 
-INSERT INTO Workout_template (tid, tname, uid, courseID) VALUES
-  (1, 'Full body workout', 2, 111),
-  (2, 'HIIT Cardio', 2, 112),
-  (3, 'Upper-body workout', 2, 113),
-  (4, 'Lower-body workout', 2, 114),
-  (5, 'Core workout', 2, 115),
-  (6, 'Deleted', 2, 116);
+INSERT INTO Workout_template (tid, uid, courseID) VALUES
+  (1, 2, 111),
+  (2, 2, 112),
+  (3, 2, 113),
+  (4, 2, 114),
+  (5, 2, 115),
+  (6, 2, 116);
 
 Insert INTO DelTemplate (tid) VALUES 
   (6);
@@ -147,3 +147,4 @@ INSERT INTO Enrollment (uid, courseID) VALUES
   (3, 111),
   (4, 111), 
   (5, 111);
+

@@ -10,7 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username       = trim($_POST["username"]);
     $password       = trim($_POST["password"]);
     processLogin($db, $username, $password);
-    header("Location: dashboard.php");
     exit();
 }
 ?>
