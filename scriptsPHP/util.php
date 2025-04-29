@@ -1,10 +1,12 @@
 <?php 
 
-include_once("scriptsPHP/dbConnect.php");
+// session_start();
+include_once("dbConnect.php");
 
 function debug($str) {
     print "<DIV class='debug'>$str</DIV>\n";
 }
+
 /*
 * Function to include needed CSS/JS imports for any page on site
 * Made by Nick
@@ -53,18 +55,21 @@ function genNavBar()
     </div>
 </div>  
 <?php
-}   // genNavBar
+}
 
-//add user function
-function addUser($db, $age, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
+// Add user function
+function addUser($db, $birthday, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
     if (!$db) {
         debug("Database connection failed.");
+        return;
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $query = "INSERT INTO User (age, weight, email, height, username, password, weeklyCalGoal) VALUES ($age, $weight, '$email', $height, '$username', '$hashedPassword', $weeklyCalGoal)";
-    debug($query);  
+    // Correctly enclose $birthday, $email, $username, and $hashedPassword in quotes
+    $query = "INSERT INTO User (birthDay, weight, email, height, username, password, weeklyCalGoal)
+              VALUES ('$birthday', $weight, '$email', $height, '$username', '$hashedPassword', $weeklyCalGoal)";
+    debug($query);
 
     $res = $db->query($query);
 
@@ -96,17 +101,15 @@ function processLogin($db, $username, $password) {
             session_regenerate_id(true);
             $_SESSION['username'] = $username;
             $_SESSION['uid'] = $uid;
-            print "<p>Successfully logged in as $username (User ID: $uid)</p>\n";
             header("refresh:2;url=dashboard.php");
         } else {
-            header("refresh:2;url=index.php");
-            print "<p>Login as $username failed</p>\n";    
+            header("refresh:2;url=index.php");   
         }
     }
 }
 
 function showDetails($db, $uid) {
-    $stmt = $db->prepare("SELECT age, weight, email, height, username, weeklyCalGoal FROM User WHERE uid = ?");
+    $stmt = $db->prepare("SELECT birthDay, weight, email, height, username, weeklyCalGoal FROM User WHERE uid = ?");
     $stmt->execute([$uid]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -119,5 +122,17 @@ function logout() {
     session_destroy();
     header("Location: index.php");
     exit();
+}
+
+function updateAccount($db, $uid, $weight, $height, $weeklyCalGoal) {
+    if (!$db) {
+        debug("Database connection failed.");
+        return;
+    }
+
+    $query = "UPDATE User SET weight = ?, height = ?, weeklyCalGoal = ? WHERE uid = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute([$weight, $height, $weeklyCalGoal, $uid]);
+
 }
 

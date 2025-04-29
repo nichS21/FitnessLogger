@@ -316,5 +316,40 @@ function calcCals($db, $formData)
     }
 }
 
+//Function that gets five most recent logs a user has created to display on the logging page date collapse box
+function fivePrevLogs($db, $uid)
+{
+    $sql = "SELECT date FROM log " .
+           "WHERE uid = ?  " .
+           "ORDER BY date DESC " .
+           "LIMIT 5";
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1, $uid);
+    $res = $stmt->execute();
+
+    if(!$res || $stmt->rowCount() < 1) 
+    {
+        print "<div class=\"card-header fw-bold\">Your most recent log(s)</div> \n";
+        print "<div class=\"card-body\">You haven't created any logs yet.</div> \n";
+    }
+    else
+    {
+        print "<div class=\"card-header fw-bold\">Your " . $stmt->rowCount() . " most recent log(s)</div> \n";
+        print "<div class=\"card-body\"> \n";
+        print "<ul> \n";
+
+        //loop over dates to make a bulleted list
+        while($row = $stmt->fetch())
+        {
+            $temp =  new DateTime($row['date']);
+            $date = date_format($temp, "Y-m-d");                 //format date without hours, minutes, seconds
+            print "<li>" . $date . "</li>";
+        }
+
+        print "</ul> \n";
+        print "</div> \n";
+    }
+}
+
 
 ?>

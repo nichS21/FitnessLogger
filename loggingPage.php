@@ -10,11 +10,13 @@ error_reporting(E_ALL);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Workout Logging </title>
     <?php 
-        include_once("scriptsPHP/dbConnect.php");
-        include_once("scriptsPHP/util.php");
+        include_once("scriptsPHP/util.php"); 
+        include_once("scriptsPHP/logging.php");
         neededImports();
 
         $func = "no log";                       //default to no log, must select a date
+
+        $uid = $_SESSION['uid'];                 
     ?>
 
     <script src="js/logging.js"></script>
@@ -95,7 +97,7 @@ error_reporting(E_ALL);
 
 <body class="site-font">
 <!-- Nav bar --> 
-<?php genNavBar() ?>
+<?php genNavBar(); ?>
 
 
 <!-- Delete Confirmation Modal -->
@@ -124,21 +126,32 @@ error_reporting(E_ALL);
             <button class="gnrlBtn" type="button" data-bs-toggle="collapse" data-bs-target="#searchDate" aria-expanded="false" aria-controls="searchDate">View/Create Log</button>
 
             <div class="collapse p-2" id="searchDate">
-                <div class="card card-body p-3" style="height:auto; width:40vw">
+                <div class="mx-auto" style="height:auto; width:75vw;">
                     <form method="POST" action="?func=log">
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <label class="form-label" for="date"> Choose a date: </label>
-                                    <input class="form-control form-control-lg" style="width:20vw" type="date" name="date" id="date" min="2025-01-01" required/>
+                                    <div class="card">
+                                        <div class="card-header fw-bold">Choose a date:</div>
+                                        <div class="card-body">
+                                            <input class="form-control form-control-lg" style="width:20vw" type="date" name="date" id="date" min="2025-01-01" required/>
+                                            
+                                            <div class="row">
+                                                <div class="col-sm-10"></div>
+                                                <div class="col-sm-2">
+                                                    <button class="gnrlBtn" type="submit">Search</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                              
                                 </div>
-                            </div>
-                            
-                            <div class="row mt-3">
-                                <div class="col-md-10"></div>
-                                <div class="col-md-2 justify-content-md-end">
-                                    <button class="gnrlBtn" type="submit">Search</button>
+
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <?php fivePrevLogs($db, $uid); ?>
+                                    </div>
                                 </div>
+                                
                             </div>
                         </div>
                     </form>
@@ -174,7 +187,7 @@ error_reporting(E_ALL);
                 else $date = "";
 
                 
-                displayPage($db, $_SESSION['uid'], $date);
+                displayPage($db, $uid, $date);
                 break;
         }
      

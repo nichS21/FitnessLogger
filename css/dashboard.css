@@ -1,0 +1,127 @@
+/* body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+}
+
+header {
+    background-color: #004c8c;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info img {
+    height: 30px;
+    margin-right: 8px;
+} */
+
+main {
+    padding: 30px;
+    position: relative;
+}
+
+.courses h2 {
+    margin: 20px;
+}
+
+.course-grid {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.course {
+    text-align: center;
+}
+
+.course img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border: 5px solid #555;
+    border-radius: 4px;
+}
+
+.actions {
+    margin-top: 40px;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+.actions h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+}
+
+.button {
+    padding: 12px 18px;
+    background-color: #fcbfa7;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.buttons .button a {
+    text-decoration: none;
+}
+
+.buttons .button:hover {
+    background-color: #fda074;
+}
+
+.progress-bar, .progress-bar::before, .progress-bar::after {
+    box-sizing: border-box;
+}
+
+.track {
+    position: absolute;
+    right: 2px;
+    top: 0; 
+    margin: 10px;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 3em;
+    background-color: grey;
+    border-radius: 1.5em;
+    color: white;
+}
+
+.progress-bar::before {
+    content: attr(data-label);
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: .5em;
+    top: .5em;
+    bottom: .5em;
+    width: 70%;
+    min-width: 2rem;
+    max-width: calc(100% - 1em);
+    background-color: skyblue;
+    border-radius: 1em;
+    padding: 1em;
+}
