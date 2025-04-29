@@ -45,8 +45,11 @@ function genCourse($db, $uid) {
     }
 }
 
-function genAllCourse($db) {
-    $query = "SELECT name from Course";
+function genAllCourse($db, $uid) {
+    $query =   "SELECT name from Course
+                EXCEPT
+                SELECT name from Course AS c JOIN Enrollment AS e
+                WHERE e.uid=$uid AND e.courseID = c.courseID";
 
     $res = $db->query($query);
 

@@ -28,10 +28,19 @@ $uid = 2;
     ?>
     <main>
         <section class="courses">
-            <h2><u>All courses:</u></h2>
+            <h2><u>Your courses:</u></h2>
             <div class="course-grid">
                 <?php
-                genAllCourse($db);
+                    genCourse($db, $uid);
+                ?>
+            </div>
+
+        </section>
+        <section class="courses">
+            <h2><u>Other courses:</u></h2>
+            <div class="course-grid">
+                <?php
+                    genAllCourse($db, $uid);
                 ?>
             </div>
 
