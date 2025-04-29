@@ -3,19 +3,23 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include_once("scriptsPHP/util.php"); 
+include_once("scriptsPHP/util.php");
+include_once("scriptsPHP/dbConnect.php");
 
+// Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullname       = trim($_POST["fullname"]);
     $username       = trim($_POST["username"]);
     $email          = trim($_POST["email"]);
-    $age            = (int) trim($_POST["age"]);
+    $birthday       = trim($_POST["birthday"]);  // New birthday input
     $weight         = (int) trim($_POST["weight"]);
     $height         = (int) trim($_POST["height"]);
     $weeklyCalGoal  = (int) trim($_POST["weeklyCalGoal"]);
     $password       = trim($_POST["password"]);
     
-    addUser($db, $age, $weight, $email, $height, $username, $password, $weeklyCalGoal);
+    // Calculate age from birthday
+    
+    addUser($db, $birthday, $weight, $email, $height, $username, $password, $weeklyCalGoal);
     
     header("Location: index.php");
     exit();
@@ -92,7 +96,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="text"],
         input[type="email"],
         input[type="password"],
-        input[type="number"] {
+        input[type="number"],
+        input[type="date"] {
             width: 100%;
             padding: 10px;
             font-size: 14px;
@@ -103,7 +108,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="password"]:focus,
-        input[type="number"]:focus {
+        input[type="number"]:focus,
+        input[type="date"]:focus {
             border-color: #007BFF;
             outline: none;
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
@@ -143,21 +149,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <img src="images/amntLogo.png" alt="FitnessLogger Logo" class="logo">
         <h2>Sign Up for FitnessLogger</h2>
         <form class="grid-form" method="POST" action="signup.php">
-            <div class="form-group">
-                <label for="fullname">Full Name:</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
-            </div>
+            
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
             </div>
             <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
+            <!-- Replace age field with birthday field -->
             <div class="form-group">
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" placeholder="Enter your age" required>
+                <label for="birthday">Birthday:</label>
+                <input type="date" id="birthday" name="birthday" required>
             </div>
             <div class="form-group">
                 <label for="weight">Weight (kg):</label>
@@ -171,10 +183,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="weeklyCalGoal">Weekly Calorie Goal:</label>
                 <input type="number" id="weeklyCalGoal" name="weeklyCalGoal" placeholder="Enter your weekly calorie goal" required>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            </div>
+
             <button type="submit" class="btn">Sign Up</button>
             <div class="login-link">
                 Already have an account? <a href="index.php">Login here</a>
