@@ -14,7 +14,7 @@ $stmt = $db->query("SELECT eid, name FROM Exercise");
 $exercises = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $uid = $_SESSION['uid'] ?? 2; // default uid if not logged in
+    $uid = $_SESSION['uid']; // default uid if not logged in
     $templateTitle = trim($_POST['template_title']);
     $exerciseData = json_decode($_POST['template_exercises_json'], true);
 

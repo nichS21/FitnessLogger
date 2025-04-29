@@ -57,10 +57,10 @@ $uid = 1;
         <section class="actions">
             <h3>What do you want to do today?</h3>
             <div class="buttons">
-                <div class="button"><a href="/loggingPage.php">Log workouts</a></div>
-                <div class="button"><a href="/showCourse.php?menu=enroll">Enroll in Course</a></div>
-                <div class="button"><a href="?menu=progress">View Progress</a></div>
-                <div class="button"><a href="?menu=feedback">Review Coach’s Feedback</a></div>
+                <div class="button"><a href="./loggingPage.php">Log workouts</a></div>
+                <div class="button"><a href="./showCourse.php?menu=enroll">Enroll in Course</a></div>
+                <div class="button"><a href=".?menu=progress">View Progress</a></div>
+                <div class="button"><a href=".?menu=feedback">Review Coach’s Feedback</a></div>
             </div>
         </section>
     </main>

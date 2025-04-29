@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 include_once("scriptsPHP/classes_util.php");
 neededImports();
-$uid = $_SESSION['uid'] ?? 2;
+$uid = $_SESSION['uid'];
 
 // Handle form POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {   
