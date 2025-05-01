@@ -1,9 +1,9 @@
 <?php
 //connect to database
-$server = "cray.cs.gettysburg.edu";
+$server = "localhost";
 $dbase  = "s25_amnt";
-$user   = "stacni01";
-$pass   = "stacni01";
+$user   = "root";
+$pass   = "root";
 $dsn    = "mysql:host=$server;dbname=$dbase";       //data source name
 
 try 

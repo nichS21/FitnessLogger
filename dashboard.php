@@ -12,7 +12,7 @@ include("dashboard_util.php");
 // print_r($result);
 // print "<div>$result</div>";
 
-$uid = 1;
+$uid = 2;
 
 // if (isset($_GET['uid'])) {
 //     $uid = $_GET['uid'];
@@ -59,8 +59,36 @@ $uid = 1;
             <div class="buttons">
                 <div class="button"><a href="/loggingPage.php">Log workouts</a></div>
                 <div class="button"><a href="/showCourse.php?menu=enroll">Enroll in Course</a></div>
-                <div class="button"><a href="?menu=progress">View Progress</a></div>
-                <div class="button"><a href="?menu=feedback">Review Coach’s Feedback</a></div>
+                <div class="button"><a href="/analytics.php">View Progress</a></div>
+                <?php
+                    $query = "SELECT uid FROM Admin";
+                    $res = $db->query($query);
+                    $isAdmin = false;
+                    
+                    if ($res) {
+                        while ($row = $res->fetch()) {
+                            if ($row['uid'] == $uid) {
+                                $isAdmin = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($isAdmin) {
+                        echo "
+                        <div class='button'><a href='/loggingPage.php'>Log workouts</a></div>
+                        <div class='button'><a href='/showCourse.php?menu=enroll'>See All Courses</a></div>
+                        <div class='button'><a href='/analytics.php'>View Progress</a></div>
+                        <div class='button'><a href='/createClass.php'>Create New Class</a></div>
+                        <div class='button'><a href='/createTemp.php'>Create New Template</a></div>
+                        <div class='button'><a href='/createFeedback.php'>Record Feedback</a></div>";
+                    }
+                    else {
+                        echo "
+                        <div class='button'><a href='/loggingPage.php'>Log workouts</a></div>
+                        <div class='button'><a href='/showCourse.php?menu=enroll'>See All Courses</a></div>
+                        <div class='button'><a href='/analytics.php'>View Progress</a></div>";
+                    }
+                ?>
             </div>
         </section>
     </main>
