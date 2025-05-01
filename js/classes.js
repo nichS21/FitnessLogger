@@ -46,7 +46,7 @@ function selectImages(){
     });
 }
 
-// --- Form Validation (Template Selection) ---
+// --- Form Validation for template selection ---
 function validateClassTemp() {
     const form = document.querySelector('form[name="createCourse"]');
     const templateSelect = document.getElementById('template');
@@ -78,7 +78,7 @@ function validateClassTemp() {
     });
 }
 
-// --- Always run this after page loads ---
+// Running js functions ---
 document.addEventListener('DOMContentLoaded', function () {
     selectImages();
     validateClassTemp();

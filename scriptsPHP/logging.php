@@ -319,7 +319,7 @@ function calcCals($db, $formData)
 //Function that gets five most recent logs a user has created to display on the logging page date collapse box
 function fivePrevLogs($db, $uid)
 {
-    $sql = "SELECT date FROM log " .
+    $sql = "SELECT date FROM Log " .
            "WHERE uid = ?  " .
            "ORDER BY date DESC " .
            "LIMIT 5";

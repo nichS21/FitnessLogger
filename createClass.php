@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+
+// Set sessions and include necessary files
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 include_once("scriptsPHP/classes_util.php");
-neededImports();
+
 $uid = $_SESSION['uid'];
 
 // Handle form POST
@@ -20,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $_SESSION['courseid'] = $newCourseID;
     $_SESSION['latest_course_id'] = $newCourseID;
 
-    $tname = $_POST['template'] ?? null;
+    $tname = $_POST['template'];
     if ($tname) {
         $stmt = $db->prepare("SELECT tid FROM Workout_template WHERE uid = ? AND courseID = ? AND tname = ?");
         $stmt->execute([$uid, $newCourseID, $tname]);
@@ -37,7 +42,7 @@ $stmt->execute([$uid]);
 $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<html lang="en">
+<!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="css/creation.css"> 
     <title>Create Workout Class</title>
@@ -46,9 +51,7 @@ $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body class="site-font">
-
-    <?php genNavBar(); ?>
-
+    
     <div class="form-container">
         <h2>New Workout Course</h2>
 

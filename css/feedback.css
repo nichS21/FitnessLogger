@@ -1,0 +1,81 @@
+h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    color: #1e3a5f;
+}
+
+.feedback-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.feedback-item {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.feedback-item h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #2c3e50;
+}
+
+.feedback-item ul {
+    padding-left: 20px;
+}
+
+.feedback-item ul li {
+    margin-bottom: 5px;
+}
+
+.feedback-text {
+    background-color: #fff9dc;
+    padding: 10px;
+    border-left: 4px solid #f1c40f;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.feedback-toggle {
+    cursor: pointer;
+    padding: 12px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.feedback-toggle::after {
+    content: "▼";
+    font-size: 12px;
+    transition: transform 0.2s ease;
+    margin-left: 10px;
+}
+
+.feedback-toggle.open::after {
+    transform: rotate(-180deg);
+}
+
+.exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 6px 20px;
+    list-style-position: inside;
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.exercise-grid li {
+    margin: 0;
+}

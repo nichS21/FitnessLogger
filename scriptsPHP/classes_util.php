@@ -1,6 +1,7 @@
 <?php 
-
 include_once("scriptsPHP/util.php");
+neededImports();
+genNavBar();
 
 function createClass($db, $uid, $className, $classDes, $classLength, $imageUrl) {
     try {
@@ -29,5 +30,4 @@ function showToast($message, $type = 'success') {
     </script>
     ';
 }
-
 ?>
