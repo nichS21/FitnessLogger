@@ -2,10 +2,6 @@
 include_once("scriptsPHP/dbConnect.php");
 include_once("scriptsPHP/util.php");
 
-// function debug($str) {
-//     print "<div class='debug'>$str</div>";
-// }
-
 function genUsers($db) {
     $query = "SELECT uid, username FROM User";
     $res = $db->query($query);
@@ -25,7 +21,7 @@ function genUsers($db) {
 }
 
 function genCourse($db, $uid) {
-    $query = "SELECT name from Course AS c JOIN Enrollment AS e
+    $query = "SELECT c.courseID, name, unsplash_url from Course AS c JOIN Enrollment AS e
               WHERE e.uid=$uid AND e.courseID = c.courseID";
 
     $res = $db->query($query);
@@ -35,14 +31,17 @@ function genCourse($db, $uid) {
     }
     else {
         while ($row = $res->fetch()) {
+            $courseID = $row['courseID'];
             $name = $row['name'];
+            $unsplash_url = $row['unsplash_url'];
             
             echo "
             <div class='course'>
                 <div class='image-container'>
-                    <img src='images/core.jpg' alt='$name'>
+                    <img src='$unsplash_url' alt='$name'>
                     <div class='overlay'>
-                        <button class='course-btn'>Detail</button>
+                        <button class='course-btn'><a href='/courseDetail.php?courseID=$courseID'>Detail</a></button>
+                        
                     </div>
                 </div>
                 <p>$name</p>
@@ -52,27 +51,33 @@ function genCourse($db, $uid) {
 }
 
 function genAllCourse($db, $uid) {
-    $query =   "SELECT name from Course
+    $query =   "SELECT courseID, name, unsplash_url from Course
                 EXCEPT
-                SELECT name from Course AS c JOIN Enrollment AS e
+                SELECT c.courseID, name, unsplash_url from Course AS c JOIN Enrollment AS e
                 WHERE e.uid=$uid AND e.courseID = c.courseID";
 
     $res = $db->query($query);
 
     if ($res == false || $res->rowCount() < 1) {
-        print "<p>No course has been created</p>";
+        print "<p>You have enrolled in all available courses. No new course has been created</p>";
     } 
     else {
         while ($row = $res->fetch()) {
+            $courseID = $row['courseID'];
             $name = $row['name'];
+            $unsplash_url = $row['unsplash_url'];
 
             echo "
             <div class='course'>
                 <div class='image-container'>
-                    <img src='images/core.jpg' alt='$name'>
+                    <img src='$unsplash_url' alt='$name'>
                     <div class='overlay'>
-                        <button class='course-btn'><a href='courseDetail.php'>Detail</a></button>
-                        <button class='course-btn'><a href='/loggingPage.php'>Enroll</a></button>
+                        <button class='course-btn'><a href='/courseDetail.php?courseID=$courseID'>Detail</a></button>
+                        <form method='POST' action='enrollCourse.php'>
+                            <input type='hidden' name='courseID' value='$courseID'>
+                            <input type='hidden' name='uid' value='$uid'>
+                            <button type='submit' class='course-btn'>Enroll</button>
+                        </form>
                     </div>
                 </div>
                 <p>$name</p>
