@@ -21,8 +21,9 @@ function genUsers($db) {
 }
 
 function genCourse($db, $uid) {
-    $query = "SELECT c.courseID, name, unsplash_url from Course AS c JOIN Enrollment AS e
-              WHERE e.uid=$uid AND e.courseID = c.courseID";
+    $query = "SELECT c.courseID, name, unsplash_url " . 
+             "From Course AS c JOIN Enrollment AS e ON c.courseID = e.courseID " .
+             "WHERE e.uid=$uid ";
 
     $res = $db->query($query);
     
