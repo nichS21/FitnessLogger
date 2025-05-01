@@ -4,7 +4,7 @@
 include_once("scriptsPHP/util.php");
 include("dashboard_util.php");
 
-$uid = 2;
+$uid = 1;
 
 // if (isset($_GET['uid'])) {
 //     $uid = $_GET['uid'];
@@ -26,6 +26,7 @@ $uid = 2;
     neededImports();
     genNavBar();
     ?>
+   
     <main>
         <section class="courses">
             <h2><u>Your courses:</u></h2>

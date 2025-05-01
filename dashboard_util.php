@@ -1,5 +1,6 @@
 <?php
 include_once("scriptsPHP/dbConnect.php");
+include_once("scriptsPHP/util.php");
 
 // function debug($str) {
 //     print "<div class='debug'>$str</div>";
@@ -38,7 +39,12 @@ function genCourse($db, $uid) {
             
             echo "
             <div class='course'>
-                <img src='images/core.jpg' alt='$name'>
+                <div class='image-container'>
+                    <img src='images/core.jpg' alt='$name'>
+                    <div class='overlay'>
+                        <button class='course-btn'>Detail</button>
+                    </div>
+                </div>
                 <p>$name</p>
             </div>\n";
         }
@@ -62,7 +68,13 @@ function genAllCourse($db, $uid) {
 
             echo "
             <div class='course'>
-                <img src='images/core.jpg' alt='$name'>
+                <div class='image-container'>
+                    <img src='images/core.jpg' alt='$name'>
+                    <div class='overlay'>
+                        <button class='course-btn'><a href='courseDetail.php'>Detail</a></button>
+                        <button class='course-btn'><a href='/loggingPage.php'>Enroll</a></button>
+                    </div>
+                </div>
                 <p>$name</p>
             </div>\n";
         }

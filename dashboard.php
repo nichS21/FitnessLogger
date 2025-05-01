@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include_once("scriptsPHP/util.php");
+include("scriptsPHP/util.php");
 include("dashboard_util.php");
 
 // neededImports();
