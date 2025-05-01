@@ -45,8 +45,9 @@ function genNavBar()
                     Account
                 </button>
                 <ul class="dropdown-menu acctColor" aria-labelledby="accountDropdown">
-                    <li><a class="dropdown-item acctColor" href="#">My Account</a></li>
-                    <li><a class="dropdown-item acctColor" href="#">Logout</a></li>
+                    <li><a class="dropdown-item acctColor" href="account.php">My Account</a></li>
+                    <li><a class="dropdown-item acctColor" href="analytics.php">My Progress</a></li>
+                    <li><a class="dropdown-item acctColor" href="signup.php">Logout</a></li>
                 </ul>
             </div>
         </div>
