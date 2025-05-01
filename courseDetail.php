@@ -1,15 +1,14 @@
 <?php
-// session_start();
+session_start();
 
 include_once("scriptsPHP/util.php");
 include("dashboard_util.php");
 
-$uid = 1;
+// $uid = 1;
 
-// if (isset($_GET['uid'])) {
-//     $uid = $_GET['uid'];
-//     genCourse($db, $uid);
-// }
+if (isset($_GET['uid'])) {
+    $uid = $_GET['uid'];
+}
 ?>
 
 <!DOCTYPE html>

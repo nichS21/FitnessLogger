@@ -12,11 +12,11 @@ include("dashboard_util.php");
 // print_r($result);
 // print "<div>$result</div>";
 
-$uid = 2;
+// $uid = 2;
 
-// if (isset($_GET['uid'])) {
-//     $uid = $_GET['uid'];
-// }
+if (isset($_GET['uid'])) {
+    $uid = $_GET['uid'];
+}
 ?>
 
 <!DOCTYPE html>
