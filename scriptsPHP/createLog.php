@@ -49,7 +49,7 @@ if(isset($_POST['create']))
 function createBlank($db, $uid, $data)
 {
     //make the new log
-    $sql = "INSERT INTO log (uid, date) " . 
+    $sql = "INSERT INTO Log (uid, date) " . 
            "VALUES (?, ?)";
 
     $stmt = $db->prepare($sql);
@@ -64,7 +64,7 @@ function createBlank($db, $uid, $data)
 function createTemplate($db, $uid, $data)
 {
     //make the new log 
-    $sql = "INSERT INTO log (uid, date, tid) " . 
+    $sql = "INSERT INTO Log (uid, date, tid) " . 
     "VALUES (?, ?, ?)";
 
     $stmt = $db->prepare($sql);
@@ -80,7 +80,7 @@ function createTemplate($db, $uid, $data)
 
     //prefill from the template 
     $sql = "SELECT eid, time, sets, reps, weight " .
-            "FROM templated_exercise " . 
+            "FROM Templated_exercise " . 
             "WHERE tid = ?";
 
     $stmt = $db->prepare($sql);
@@ -90,7 +90,7 @@ function createTemplate($db, $uid, $data)
     if(!$res) exit();                           //if query fails, quit executing code
 
     //put data from template into new one
-    $sql = "INSERT INTO entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) \n" .
+    $sql = "INSERT INTO Entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) \n" .
            "VALUES \n";
 
     $numRows = $stmt->rowCount();
@@ -137,7 +137,7 @@ function createTemplate($db, $uid, $data)
 function createPrevious($db, $uid, $data)
 {
     //make the new log
-    $sql = "INSERT INTO log (uid, date) " . 
+    $sql = "INSERT INTO Log (uid, date) " . 
     "VALUES (?, ?)";
 
     $stmt = $db->prepare($sql);
@@ -155,14 +155,14 @@ function createPrevious($db, $uid, $data)
 
 
     //first, get the data from the old log
-    $sql = "SELECT * FROM entered_exercise WHERE lid = ?";
+    $sql = "SELECT * FROM Entered_exercise WHERE lid = ?";
     $stmt = $db->prepare($sql);
     $stmt->bindParam(1, $oldLID);
     $res = $stmt->execute();
 
 
     //put data from old log into new one
-    $sql = "INSERT INTO entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) \n" . 
+    $sql = "INSERT INTO Entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) \n" . 
            "VALUES \n";
 
     $numRows = $stmt->rowCount();

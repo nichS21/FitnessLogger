@@ -15,7 +15,7 @@ function execSelect($db, $formData)
 {
     try{
         //get all exercises
-        $sql = "SELECT eid, name FROM exercise";
+        $sql = "SELECT eid, name FROM Exercise";
         $res = $db->query($sql);
 
         if($res == false) throw new Exception('Failed to get exercises from database.');
@@ -57,7 +57,7 @@ function saveRow($db, $formData)
         $burnedCals = calcCals($db, $formData);
 
         //insert the data
-        $sql = "INSERT INTO entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) " .
+        $sql = "INSERT INTO Entered_exercise (lid, eid, caloriesBurned, time, sets, reps, weight, notes) " .
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $bindParams = array($formData['lid'], $formData['eid'], $burnedCals, $formData['time'], $formData['sets'], $formData['reps'], $formData['weight'], $formData['notes']);
@@ -94,7 +94,7 @@ function updateRow($db, $formData)
         $burnedCals = calcCals($db, $formData);
 
         //update the data
-        $sql = "UPDATE entered_exercise " . 
+        $sql = "UPDATE Entered_exercise " . 
                "SET eid = ?, caloriesBurned = ?, time = ?, sets = ?, reps = ?, weight = ?, notes = ? " . 
                "WHERE eeid = ? ";
 
@@ -127,7 +127,7 @@ function delRow($db, $formData)
     try
     {
         //delete the data
-        $sql = "DELETE FROM entered_exercise " . 
+        $sql = "DELETE FROM Entered_exercise " . 
                "WHERE eeid = ? ";
         
         $stmt = $db->prepare($sql);
