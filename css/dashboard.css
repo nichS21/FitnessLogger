@@ -70,6 +70,8 @@ main {
     display: flex;
     flex-wrap: nowrap;
     gap: 15px;
+    align-items: center;
+    justify-content: center;
 }
 
 .button {
@@ -124,4 +126,61 @@ main {
     background-color: skyblue;
     border-radius: 1em;
     padding: 1em;
+}
+
+.image-container {
+    position: relative;
+    width: 200px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 4px;
+}
+
+/* Overlay for hover effect */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.image-container:hover .overlay {
+    opacity: 1;
+}
+
+.course-btn {
+    background-color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.course-btn a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.course-btn:hover {
+    background-color: #f2f2f2;
 }
