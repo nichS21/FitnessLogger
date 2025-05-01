@@ -8,7 +8,7 @@
 function exerciseOpts($db, $eid, $rowID)
 {
     //get all exercises
-    $sql = "SELECT eid, name FROM exercise";
+    $sql = "SELECT eid, name FROM Exercise";
     $res = $db->query($sql);
 
     print "<select class=\"form-select inputSelect\" name=\"exercise\" oninput=\"showUnsaved('$rowID')\">\n";
@@ -35,9 +35,9 @@ function exerciseOpts($db, $eid, $rowID)
 function templateSelect($db, $uid)
 {
     $sql = "SELECT tid, name " . 
-           "FROM course AS c " .
-           "LEFT JOIN enrollment AS e ON c.courseID = e.courseID " .
-           "LEFT JOIN workout_template AS wt ON c.courseID = wt.courseID " .
+           "FROM Course AS c " .
+           "LEFT JOIN Enrollment AS e ON c.courseID = e.courseID " .
+           "LEFT JOIN Workout_template AS wt ON c.courseID = wt.courseID " .
            "WHERE e.uid = $uid";
 
     $res = $db->query($sql);
@@ -105,7 +105,7 @@ function previousSelect($db, $uid)
  {
     $sql = $db->prepare(
         "SELECT * " .
-        "FROM entered_exercise NATURAL JOIN exercise " .
+        "FROM Entered_exercise NATURAL JOIN Exercise " .
         "WHERE lid = ? " . 
         "ORDER BY eeid ASC"
     );
@@ -206,8 +206,8 @@ function previousSelect($db, $uid)
     {
         //get course name
         $sql = "SELECT name " . 
-        "FROM workout_template AS wt " . 
-        "LEFT JOIN course AS c ON wt.courseID = c.courseID " . 
+        "FROM Workout_template AS wt " . 
+        "LEFT JOIN Course AS c ON wt.courseID = c.courseID " . 
         "WHERE tid = " . $row['tid'] . "";
 
         $res = $db->query($sql);
@@ -294,7 +294,7 @@ function calcCals($db, $formData)
     $sets = $formData['sets'];
 
     //get calories burned per rep OR calories burned per minute for this exercise
-    $sql = "SELECT * FROM exercise WHERE eid = ?";
+    $sql = "SELECT * FROM Exercise WHERE eid = ?";
 
     $stmt = $db->prepare($sql);
     $stmt->bindParam(1, $eid);
@@ -313,6 +313,41 @@ function calcCals($db, $formData)
     else                                //calculate based on reps
     {           
         return ($reps * $row['caloriesPerRep']) * $sets;
+    }
+}
+
+//Function that gets five most recent logs a user has created to display on the logging page date collapse box
+function fivePrevLogs($db, $uid)
+{
+    $sql = "SELECT date FROM Log " .
+           "WHERE uid = ?  " .
+           "ORDER BY date DESC " .
+           "LIMIT 5";
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1, $uid);
+    $res = $stmt->execute();
+
+    if(!$res || $stmt->rowCount() < 1) 
+    {
+        print "<div class=\"card-header fw-bold\">Your most recent log(s)</div> \n";
+        print "<div class=\"card-body\">You haven't created any logs yet.</div> \n";
+    }
+    else
+    {
+        print "<div class=\"card-header fw-bold\">Your " . $stmt->rowCount() . " most recent log(s)</div> \n";
+        print "<div class=\"card-body\"> \n";
+        print "<ul> \n";
+
+        //loop over dates to make a bulleted list
+        while($row = $stmt->fetch())
+        {
+            $temp =  new DateTime($row['date']);
+            $date = date_format($temp, "Y-m-d");                 //format date without hours, minutes, seconds
+            print "<li>" . $date . "</li>";
+        }
+
+        print "</ul> \n";
+        print "</div> \n";
     }
 }
 

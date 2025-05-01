@@ -1,10 +1,12 @@
 <?php 
 
+// session_start();
 include_once("dbConnect.php");
 
 function debug($str) {
     print "<DIV class='debug'>$str</DIV>\n";
 }
+
 /*
 * Function to include needed CSS/JS imports for any page on site
 * Made by Nick
@@ -18,7 +20,7 @@ function neededImports()
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" >
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="../css/site.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
 <?php
 } // neededImports()
 
@@ -34,7 +36,7 @@ function genNavBar()
 <div class="container-fluid site-color p-3 text-white"> 
     <div class="row">
         <div class="col-md-1">
-            <img src="../images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
+            <img src="images/amntLogo.png" height="50px" width="auto" class="mx-auto d-block" /> 
         </div>
         <div class="col-md-9">
             <p class="fs-1" style="display:inline">AMNT Fitness Logger</p>
@@ -46,8 +48,7 @@ function genNavBar()
                 </button>
                 <ul class="dropdown-menu acctColor" aria-labelledby="accountDropdown">
                     <li><a class="dropdown-item acctColor" href="account.php">My Account</a></li>
-                    <li><a class="dropdown-item acctColor" href="analytics.php">My Progress</a></li>
-                    <li><a class="dropdown-item acctColor" href="signup.php">Logout</a></li>
+                    <li><a class="dropdown-item acctColor" href="logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -56,16 +57,19 @@ function genNavBar()
 <?php
 }
 
-//add user function
-function addUser($db, $age, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
+// Add user function
+function addUser($db, $birthday, $weight, $email, $height, $username, $password, $weeklyCalGoal) {
     if (!$db) {
         debug("Database connection failed.");
+        return;
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $query = "INSERT INTO User (age, weight, email, height, username, password, weeklyCalGoal) VALUES ($age, $weight, '$email', $height, '$username', '$hashedPassword', $weeklyCalGoal)";
-    debug($query);  
+    // Correctly enclose $birthday, $email, $username, and $hashedPassword in quotes
+    $query = "INSERT INTO User (birthDay, weight, email, height, username, password, weeklyCalGoal)
+              VALUES ('$birthday', $weight, '$email', $height, '$username', '$hashedPassword', $weeklyCalGoal)";
+    debug($query);
 
     $res = $db->query($query);
 
@@ -97,12 +101,38 @@ function processLogin($db, $username, $password) {
             session_regenerate_id(true);
             $_SESSION['username'] = $username;
             $_SESSION['uid'] = $uid;
-            print "<p>Successfully logged in as $username (User ID: $uid)</p>\n";
             header("refresh:2;url=dashboard.php");
         } else {
-            header("refresh:2;url=index.php");
-            print "<p>Login as $username failed</p>\n";    
+            header("refresh:2;url=index.php");   
         }
     }
+}
+
+function showDetails($db, $uid) {
+    $stmt = $db->prepare("SELECT birthDay, weight, email, height, username, weeklyCalGoal FROM User WHERE uid = ?");
+    $stmt->execute([$uid]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function logout() {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
+
+function updateAccount($db, $uid, $weight, $height, $weeklyCalGoal) {
+    if (!$db) {
+        debug("Database connection failed.");
+        return;
+    }
+
+    $query = "UPDATE User SET weight = ?, height = ?, weeklyCalGoal = ? WHERE uid = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute([$weight, $height, $weeklyCalGoal, $uid]);
+
 }
 

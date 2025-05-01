@@ -1,12 +1,11 @@
 USE s25_amnt;
 
-
 CREATE TABLE User (
 	uid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	age INT NOT NULL,
+	birthDay DATE NOT NULL,
 	weight INT NOT NULL,
 	email VARCHAR(150) NOT NULL,
-	height INT NOT NULL,
+	height FLOAT NOT NULL,
 	username VARCHAR(150) NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	weeklyCalGoal INT NOT NULL
@@ -26,7 +25,9 @@ CREATE TABLE Course (
     courseID INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     uid INT NOT NULL,
     name VARCHAR(255) NOT NULL,
+    class_length INT NOT NULL DEFAULT 1,
     description TINYTEXT NOT NULL,
+    unsplash_url VARCHAR(255) NOT NULL,
     FOREIGN KEY (uid) REFERENCES User(uid)
 );
 
@@ -52,7 +53,6 @@ CREATE TABLE Log (
     FOREIGN KEY (uid) REFERENCES User(uid)
 );
 
-
 CREATE TABLE Exercise(
 	eid INT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	name VARCHAR(100) NOT NULL,
@@ -74,9 +74,9 @@ CREATE TABLE Entered_exercise (
     FOREIGN KEY (eid) REFERENCES Exercise(eid) ON DELETE CASCADE
 );
 
-
 CREATE TABLE Workout_template (
     tid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    tname VARCHAR(255),
     uid INT NOT NULL,
     courseID INT NOT NULL,
     FOREIGN KEY (uid) REFERENCES User(uid),
