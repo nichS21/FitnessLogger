@@ -1,10 +1,10 @@
 <?php
-//connect to database
+
 $server = "cray.cs.gettysburg.edu";
 $dbase  = "s25_amnt";
 $user   = "stacni01";
 $pass   = "stacni01";
-$dsn    = "mysql:host=$server;dbname=$dbase";       //data source name
+$dsn    = "mysql:host=$server;dbname=$dbase";  
 
 try 
 {
