@@ -103,10 +103,7 @@ $exStmt = $db->prepare(
 );
 ?>
 <!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Workout Logs &amp; Feedback</title>
     <link rel="stylesheet" href="css/feedback.css">
 </head>
 <body class="site-font">
