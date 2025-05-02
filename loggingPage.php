@@ -103,15 +103,15 @@ error_reporting(E_ALL);
 <!-- Delete Confirmation Modal -->
 <div class="modalDel" id="delModal">
     <div class="modalContent">
-        <div class="mHeader site-color-2nd">
+        <div class="mHeader site-color">
             <p class="fs-4 fw-bold">Confirm delete</p>
         </div>
         <div class="mBody">
             <p class="fs-6"> Are you sure you want to delete this exercise?</p>
         </div>
-        <div class="mFooter text-end site-color-2nd">
-            <button class="gnrlBtnSmall" id="modalCan">Cancel</button>
-            <button class="gnrlBtnSmall" id="modalCon">Delete</button>
+        <div class="mFooter text-end site-color">
+            <button class="gnrlBtn" id="modalCan">Cancel</button>
+            <button class="gnrlBtn" id="modalCon">Delete</button>
         </div>
     </div>
 </div>
