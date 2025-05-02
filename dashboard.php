@@ -57,13 +57,13 @@ if (isset($_GET['uid'])) {
         <section class="actions">
             <h3>What do you want to do today?</h3>
             <div class="buttons">
-                <div class="button"><a href="loggingPage.php">Log workouts</a></div>
-                <div class="button"><a href="showCourse.php?menu=enroll">Enroll in Course</a></div>
-                <div class="button"><a href="?menu=progress">View Progress</a></div>
-                <div class="button"><a href="?menu=feedback">Review Coach’s Feedback</a></div>
-                <div class="button"><a href="/loggingPage.php">Log workouts</a></div>
-                <div class="button"><a href="/showCourse.php?menu=enroll">Enroll in Course</a></div>
-                <div class="button"><a href="/analytics.php">View Progress</a></div>
+                <div class="button"><a href="./loggingPage.php">Log workouts</a></div>
+                <div class="button"><a href="./showCourse.php?menu=enroll">Enroll in Course</a></div>
+                <div class="button"><a href="./?menu=progress">View Progress</a></div>
+                <div class="button"><a href="./?menu=feedback">Review Coach’s Feedback</a></div>
+                <div class="button"><a href="./loggingPage.php">Log workouts</a></div>
+                <div class="button"><a href="./showCourse.php?menu=enroll">Enroll in Course</a></div>
+                <div class="button"><a href="./analytics.php">View Progress</a></div>
                 <?php
                     $query = "SELECT uid FROM Admin";
                     $res = $db->query($query);
@@ -79,18 +79,18 @@ if (isset($_GET['uid'])) {
                     }
                     if ($isAdmin) {
                         echo "
-                        <div class='button'><a href='/loggingPage.php'>Log workouts</a></div>
-                        <div class='button'><a href='/showCourse.php?menu=enroll'>See All Courses</a></div>
-                        <div class='button'><a href='/analytics.php'>View Progress</a></div>
-                        <div class='button'><a href='/createClass.php'>Create New Class</a></div>
-                        <div class='button'><a href='/createTemp.php'>Create New Template</a></div>
-                        <div class='button'><a href='/createFeedback.php'>Record Feedback</a></div>";
+                        <div class='button'><a href='./loggingPage.php'>Log workouts</a></div>
+                        <div class='button'><a href='./showCourse.php?menu=enroll'>See All Courses</a></div>
+                        <div class='button'><a href='./analytics.php'>View Progress</a></div>
+                        <div class='button'><a href='./createClass.php'>Create New Class</a></div>
+                        <div class='button'><a href='./createTemp.php'>Create New Template</a></div>
+                        <div class='button'><a href='./createFeedback.php'>Record Feedback</a></div>";
                     }
                     else {
                         echo "
-                        <div class='button'><a href='/loggingPage.php'>Log workouts</a></div>
-                        <div class='button'><a href='/showCourse.php?menu=enroll'>See All Courses</a></div>
-                        <div class='button'><a href='/analytics.php'>View Progress</a></div>";
+                        <div class='button'><a href='./loggingPage.php'>Log workouts</a></div>
+                        <div class='button'><a href='./showCourse.php?menu=enroll'>See All Courses</a></div>
+                        <div class='button'><a href='./analytics.php'>View Progress</a></div>";
                     }
                 ?>
             </div>

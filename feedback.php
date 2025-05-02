@@ -9,6 +9,21 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once("scriptsPHP/classes_util.php");
 
+if (!isset($_SESSION['uid'])) {
+    header('Location:index.php');
+    exit();
+}
+
+if (!isset($_SESSION['is_admin'])) {
+    $stmt = $db->prepare('SELECT 1 FROM Admin WHERE uid = ? LIMIT 1');
+    $stmt->execute([$_SESSION['uid']]);
+    $_SESSION['is_admin'] = (bool) $stmt->fetchColumn();
+}
+if ($_SESSION['is_admin']) {
+    header('Location:dashboard.php');
+    exit();
+}
+
 $uid = $_SESSION['uid'] ?? null;
 
 // Query to get logs and exercises
