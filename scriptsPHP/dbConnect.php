@@ -1,11 +1,10 @@
 <?php
 
-//connect to database
-$server = "localhost";
+$server = "localhost";//"cray.cs.gettysburg.edu";
 $dbase  = "s25_amnt";
-$user   = "root";
-$pass   = "root";
-$dsn    = "mysql:host=$server;dbname=$dbase";       //data source name
+$user   = "root";//"stacni01";
+$pass   = "root";//"stacni01";
+$dsn    = "mysql:host=$server;dbname=$dbase";  
 
 try 
 {

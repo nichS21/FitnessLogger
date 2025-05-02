@@ -14,9 +14,8 @@ include("dashboard_util.php");
 
 // $uid = 2;
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-}
+    //set uid
+    $uid = $_SESSION['uid'];                 
 ?>
 
 <!DOCTYPE html>
