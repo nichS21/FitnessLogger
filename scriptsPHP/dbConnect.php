@@ -1,9 +1,9 @@
 <?php
 
-$server = "localhost";//"cray.cs.gettysburg.edu";
+$server = "cray.cs.gettysburg.edu";
 $dbase  = "s25_amnt";
-$user   = "root";//"stacni01";
-$pass   = "root";//"stacni01";
+$user   = "stacni01";
+$pass   = "stacni01";
 $dsn    = "mysql:host=$server;dbname=$dbase";  
 
 try 
