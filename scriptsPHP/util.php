@@ -121,7 +121,7 @@ function logout() {
     }
     session_unset();
     session_destroy();
-    header("Location: index.php");
+    header("Location:index.php");
     exit();
 }
 
@@ -136,4 +136,3 @@ function updateAccount($db, $uid, $weight, $height, $weeklyCalGoal) {
     $stmt->execute([$weight, $height, $weeklyCalGoal, $uid]);
 
 }
-

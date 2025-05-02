@@ -76,9 +76,9 @@ CREATE TABLE Entered_exercise (
 
 CREATE TABLE Workout_template (
     tid INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    tname VARCHAR(255),
+    tname VARCHAR(255) NOT NULL,
     uid INT NOT NULL,
-    courseID INT NOT NULL,
+    courseID INT,
     FOREIGN KEY (uid) REFERENCES User(uid),
     FOREIGN KEY (courseID) REFERENCES Course(courseID)
 );
@@ -99,6 +99,3 @@ CREATE TABLE Templated_exercise (
     FOREIGN KEY (tid) REFERENCES Workout_template(tid),
     FOREIGN KEY (eid) REFERENCES Exercise(eid) ON DELETE CASCADE
 );
-
-
-
