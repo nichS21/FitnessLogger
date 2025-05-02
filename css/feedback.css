@@ -79,3 +79,8 @@ h2 {
 .exercise-grid li {
     margin: 0;
 }
+
+table{width:90%; margin: 0 auto; border-collapse:collapse}
+th,td{border:1px solid #ddd;padding:6px}
+th{background:#f0f0f0;text-align:left}
+textarea{width:100%;min-height:60px}

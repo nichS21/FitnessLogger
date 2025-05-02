@@ -10,43 +10,81 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once("scriptsPHP/classes_util.php");
 
+//Check if user is logged in
+if (!isset($_SESSION['uid'])) {
+    header('Location: index.php');
+    exit();
+}
+
+// Check if user is an admin(coach)
+if (!isset($_SESSION['is_admin'])) {
+    $stmt = $db->prepare('SELECT 1 FROM Admin WHERE uid = ? LIMIT 1');
+    $stmt->execute([$_SESSION['uid']]);
+    $_SESSION['is_admin'] = (bool) $stmt->fetchColumn();
+}
+
+if (!$_SESSION['is_admin']) {
+    header('Location: dashboard.php');
+    exit();
+}
+
 $uid = $_SESSION['uid'];
 
 // Handle form POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {   
-    $className   = $_POST['name'];
-    $classDes    = $_POST['description'];
-    $classLength = $_POST['class_length'];
-    $templateNames = $_POST['template'] ?? [];
-    $imageUrl    = $_POST['class_img'] ?? 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MzY1NzV8MHwxfHNlYXJjaHwxMHx8c3RyZW5ndGh8ZW58MHx8fHwxNzQ1NjgyMDg3fDA&ixlib=rb-4.0.3&q=80&w=1080';
+    $className    = $_POST['name'];
+    $classDes     = $_POST['description'];
+    $classLength  = $_POST['class_length'];
+    $imageUrl     = $_POST['class_img']
+                 ?? 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.0.3&q=80&w=1080';
 
     createClass($db, $uid, $className, $classDes, $classLength, $imageUrl);
     $newCourseID = $db->lastInsertId(); 
-    $_SESSION['courseid'] = $newCourseID;
+    $_SESSION['courseid']         = $newCourseID;
     $_SESSION['latest_course_id'] = $newCourseID;
 
-    $tname = $_POST['template'];
+    $tname = $_POST['template'] ?? null;
     if ($tname) {
-        $stmt = $db->prepare("SELECT tid FROM Workout_template WHERE uid = ? AND courseID = ? AND tname = ?");
-        $stmt->execute([$uid, $newCourseID, $tname]);
-        $stmt->fetchColumn();
+        $stmt = $db->prepare(
+            'UPDATE Workout_template
+                SET courseID = ?
+              WHERE uid      = ?
+                AND tname    = ?
+                AND courseID IS NULL'
+        );
+        $stmt->execute([$newCourseID, $uid, $tname]);
 
-        $stmt = $db->prepare("INSERT INTO Workout_template (uid, courseID, tname) VALUES (?, ?, ?)");
-        $stmt->execute([$uid, $newCourseID, $tname]);
+        if ($stmt->rowCount() === 0) {
+            $stmt = $db->prepare(
+                'INSERT INTO Workout_template (uid, courseID, tname)
+                 VALUES (?, ?, ?)'
+            );
+            $stmt->execute([$uid, $newCourseID, $tname]);
+        }
     }
 }
 
-// Load templates
-$stmt = $db->prepare("SELECT DISTINCT tname FROM Workout_template WHERE uid = ? ORDER BY tname ASC");
+$stmt = $db->prepare(
+    'SELECT DISTINCT wt.tname
+       FROM Workout_template wt
+      WHERE wt.uid = ?
+        AND NOT EXISTS (
+              SELECT 1
+                FROM Workout_template wt2
+               WHERE wt2.uid   = wt.uid
+                 AND wt2.tname = wt.tname
+                 AND wt2.courseID IS NOT NULL
+            )
+      ORDER BY wt.tname ASC'
+);
 $stmt->execute([$uid]);
 $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="css/creation.css"> 
     <title>Create Workout Class</title>
-    <script> const noTemplates = <?= (count($templates) === 0 ? 'true' : 'false') ?>; </script>
+    <script> const noTemplates = <?= (count($templates) === 0 ? 'true' : 'false') ?>; </script> 
     <script src="js/classes.js" defer></script>
 </head>
 
@@ -78,20 +116,17 @@ $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </small>
 
             <label for="template">Choose a Template:</label>
-            <select id="template" name="template" class="form-select">
-                <?php
-                if (count($templates) > 0) {
-                    echo '<option value="" disabled selected>Select a Template</option>';
-                    foreach ($templates as $row) {
-                        $name = htmlspecialchars(trim($row['tname']));
-                        echo "<option value=\"$name\">$name</option>\n";
-                    }
-                } else {
-                    echo '<option value="" disabled selected>No templates available</option>';
-                }
-                ?>
+            <select id="template" name="template" class="form-select" <?= count($templates) ? '' : 'disabled' ?>>
+                <?php if (count($templates) > 0): ?>
+                <option value="" disabled selected>Select a Template</option>
+                <?php foreach ($templates as $row): ?>
+                <?php $name = htmlspecialchars(trim($row['tname'])); ?>
+                <option value="<?= $name ?>"><?= $name ?></option>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <option value="" disabled selected>No templates available</option>
+                <?php endif; ?>
             </select>
-
             <button type="submit" class="btn btn-primary mt-3">Create Class</button>
         </form>
     </div>

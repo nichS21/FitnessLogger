@@ -9,6 +9,24 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once("scriptsPHP/classes_util.php");
 
+//Check if user is logged in
+if (!isset($_SESSION['uid'])) {
+    header('Location: index.php');
+    exit();
+}
+
+// Check if user is an admin(coach)
+if (!isset($_SESSION['is_admin'])) {
+    $stmt = $db->prepare('SELECT 1 FROM Admin WHERE uid = ? LIMIT 1');
+    $stmt->execute([$_SESSION['uid']]);
+    $_SESSION['is_admin'] = (bool) $stmt->fetchColumn();
+}
+
+if (!$_SESSION['is_admin']) {
+    header('Location: dashboard.php');
+    exit();
+}
+
 // Load all exercises from DB
 $stmt = $db->query("SELECT eid, name FROM Exercise");
 $exercises = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
