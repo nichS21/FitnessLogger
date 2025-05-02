@@ -135,14 +135,10 @@ error_reporting(E_ALL);
                                         <div class="card-header fw-bold">Choose a date:</div>
                                         <div class="card-body">
                                             <input class="form-control form-control-lg" style="width:20vw" type="date" name="date" id="date" min="2025-01-01" required/>
-                                            
-                                            <div class="row">
-                                                <div class="col-sm-10"></div>
-                                                <div class="col-sm-2">
-                                                    <button class="gnrlBtn" type="submit">Search</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div>   
+                                        <div class="card-footer text-end">
+                                            <button class="gnrlBtn" type="submit">Search</button>
+                                        </div>    
                                     </div>                              
                                 </div>
 
@@ -184,8 +180,7 @@ error_reporting(E_ALL);
                     unset($_SESSION['date']);       //unset date after displaying this log, do not want this value stuck in session data
                 } 
                 else if(isset($_POST['date'])) $date = $_POST['date'];
-                else $date = "";
-
+                else return;
                 
                 displayPage($db, $uid, $date);
                 break;
