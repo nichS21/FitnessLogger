@@ -5,10 +5,7 @@ include_once("scriptsPHP/util.php");
 include("dashboard_util.php");
 
 // $uid = 1;
-
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-}
+$uid = $_SESSION['uid'];
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +47,7 @@ if (isset($_GET['uid'])) {
     $courseID = $_GET['courseID'];
 
     $query = "SELECT username as 'Created by', name, class_length, description
-            FROM Course NATURAL JOIN user WHERE Course.courseID = $courseID";
+            FROM Course NATURAL JOIN User WHERE Course.courseID = $courseID";
     $res = $db->query($query);
 
     if ($res != false) {

@@ -41,7 +41,7 @@ function genCourse($db, $uid) {
                 <div class='image-container'>
                     <img src='$unsplash_url' alt='$name'>
                     <div class='overlay'>
-                        <button class='course-btn'><a href='/courseDetail.php?courseID=$courseID'>Detail</a></button>
+                        <button class='course-btn'><a href='./courseDetail.php?courseID=$courseID'>Detail</a></button>
                         
                     </div>
                 </div>
@@ -73,7 +73,7 @@ function genAllCourse($db, $uid) {
                 <div class='image-container'>
                     <img src='$unsplash_url' alt='$name'>
                     <div class='overlay'>
-                        <button class='course-btn'><a href='/courseDetail.php?courseID=$courseID'>Detail</a></button>
+                        <button class='course-btn'><a href='./courseDetail.php?courseID=$courseID'>Detail</a></button>
                         <form method='POST' action='enrollCourse.php'>
                             <input type='hidden' name='courseID' value='$courseID'>
                             <input type='hidden' name='uid' value='$uid'>
