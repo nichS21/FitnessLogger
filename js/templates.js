@@ -42,7 +42,6 @@ function addExerciseToTemplate() {
     bootstrap.Modal.getInstance(document.getElementById('exerciseModal')).hide();
 }
 
-
 function renderExerciseTable() {
     const table = document.getElementById('templateTableBody');
     table.innerHTML = '';
