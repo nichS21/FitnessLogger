@@ -4,11 +4,9 @@ session_start();
 include_once("scriptsPHP/util.php");
 include("dashboard_util.php");
 
-// $uid = 1;
+//set uid
+$uid = $_SESSION['uid'];                 
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-}
 ?>
 
 <!DOCTYPE html>
