@@ -82,7 +82,7 @@ include("dashboard_util.php");
                     else {
                         echo "
                         <div class='button'><a href='./showCourse.php?menu=enroll'>See All Courses</a></div>
-                        <div class=\"button\"><a href=\"./feedback.php\">View Recent Feedback</a></div>";
+                        <div class='button'><a href='./feedback.php'>View Recent Feedback</a></div>";
                     }
                 ?>
             </div>

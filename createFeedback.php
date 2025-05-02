@@ -118,66 +118,37 @@ $exStmt = $db->prepare(
 <html>
 <head>
     <link rel="stylesheet" href="css/feedback.css">
-    <style>
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .action-buttons button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .action-buttons button[name="save"] {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .action-buttons button[name="delete"] {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .action-buttons button:hover {
-            opacity: 0.85;
-        }
-    </style>
 </head>
 <body class="site-font">
 
-<h2>Logs: Add Feedback</h2>
+    <h2>Logs: Add Feedback</h2>
 
-<form method="get" class="filter-bar">
-    <label>Course:
-        <select name="course">
-            <option value="">All</option>
-            <?php foreach ($courses as $cid => $cname): ?>
-                <option value="<?= $cid ?>" <?= $cid === $courseFilter ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($cname) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </label>
+    <div class="filter-container">
+        <form method="get" class="filter-bar">
+            <label>Course:
+                <select name="course">
+                    <option value="">All</option>
+                    <?php foreach ($courses as $cid => $cname): ?>
+                        <option value="<?= $cid ?>" <?= $cid === $courseFilter ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cname) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
 
-    <label>User:
-        <select name="user">
-            <option value="">All</option>
-            <?php foreach ($students as $sid => $sname): ?>
+            <label>User:
+            <select name="user">
+                <option value="">All</option>
+                    <?php foreach ($students as $sid => $sname): ?>
                 <option value="<?= $sid ?>" <?= $sid === $userFilter ? 'selected' : '' ?>>
                     <?= htmlspecialchars($sname) ?>
                 </option>
-            <?php endforeach; ?>
-        </select>
-    </label>
-
-    <button type="submit">Filter</button>
-</form>
+                <?php endforeach; ?>
+            </select>
+        </label>
+        <button type="submit">Filter</button>
+    </form>
+</div>
 
 <?php if ($courseFilter || $userFilter): ?>
 <div style="width: 90%; margin: 0 auto 1rem; font-weight: 600;">
@@ -196,8 +167,8 @@ $exStmt = $db->prepare(
 <table>
     <thead>
         <tr>
-            <th>Date</th>
             <?php if (!$courseFilter): ?><th>Course</th><?php endif; ?>
+            <th>Date</th>
             <?php if (!$userFilter): ?><th>User</th><?php endif; ?>
             <th>Exercises</th>
             <th>Feedback</th>
@@ -222,10 +193,10 @@ $exStmt = $db->prepare(
     ?>
         <form method="post">
         <tr>
-            <td><?= htmlspecialchars($row['logDate']) ?></td>
             <?php if (!$courseFilter): ?>
                 <td><?= htmlspecialchars($row['courseName']) ?></td>
             <?php endif; ?>
+            <td><?= htmlspecialchars($row['logDate']) ?></td>
             <?php if (!$userFilter): ?>
                 <td><?= htmlspecialchars($row['username']) ?></td>
             <?php endif; ?>
