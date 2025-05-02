@@ -1,13 +1,8 @@
 <?php
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
-
-// Set sessions and include necessary files
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-include_once("scriptsPHP/classes_util.php");
+include_once 'scriptsPHP/classes_util.php';
 
 if (!isset($_SESSION['uid'])) {
     header('Location:index.php');
@@ -19,91 +14,208 @@ if (!isset($_SESSION['is_admin'])) {
     $stmt->execute([$_SESSION['uid']]);
     $_SESSION['is_admin'] = (bool) $stmt->fetchColumn();
 }
-if ($_SESSION['is_admin']) {
+if (!$_SESSION['is_admin']) {
     header('Location:dashboard.php');
     exit();
 }
 
-$uid = $_SESSION['uid'] ?? null;
+$coachUid = (int) $_SESSION['uid'];
 
-// Query to get logs and exercises
-$sql = "SELECT log.lid, log.date, log.feedback, ex.name AS exercise_name
-        FROM Log log JOIN Entered_exercise enterEx ON log.lid = enterEx.lid
-                     JOIN Exercise ex ON enterEx.eid = ex.eid
-        WHERE log.uid = :uid AND log.feedback IS NOT NULL AND log.feedback != ''
-        ORDER BY log.date DESC
-        LIMIT 10;
-        ";
+// Handle Save or Delete
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['lid'])) {
+    $lid = (int) $_POST['lid'];
+
+    if (isset($_POST['delete'])) {
+        $stmt = $db->prepare(
+            'DELETE l FROM Log l
+             JOIN Workout_template wt ON wt.tid = l.tid
+             JOIN Course c ON c.courseID = wt.courseID
+             WHERE l.lid = :lid AND c.uid = :coach'
+        );
+        $stmt->execute([
+            'lid' => $lid,
+            'coach' => $coachUid,
+        ]);
+    } elseif (isset($_POST['save']) && isset($_POST['feedback'])) {
+        $feedback = trim($_POST['feedback']);
+        $stmt = $db->prepare(
+            'UPDATE Log l
+             JOIN Workout_template wt ON wt.tid = l.tid
+             JOIN Course c ON c.courseID = wt.courseID
+             SET l.feedback = :fb
+             WHERE l.lid = :lid AND c.uid = :coach'
+        );
+        $stmt->execute([
+            'fb' => $feedback,
+            'lid' => $lid,
+            'coach' => $coachUid,
+        ]);
+    }
+
+    header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+    exit();
+}
+
+$stmt = $db->prepare('SELECT courseID, name FROM Course WHERE uid = ? ORDER BY name');
+$stmt->execute([$coachUid]);
+$courses = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$stmt = $db->prepare(
+    'SELECT DISTINCT u.uid, u.username
+     FROM Enrollment e
+     JOIN Course c ON c.courseID = e.courseID
+     JOIN User u ON u.uid = e.uid
+     WHERE c.uid = ?
+     ORDER BY u.username'
+);
+$stmt->execute([$coachUid]);
+$students = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$courseFilter = isset($_GET['course']) && ctype_digit($_GET['course']) ? (int) $_GET['course'] : null;
+$userFilter = isset($_GET['user']) && ctype_digit($_GET['user']) ? (int) $_GET['user'] : null;
+
+$sql = '
+    SELECT l.lid,
+           u.username,
+           c.courseID,
+           c.name AS courseName,
+           DATE(l.date) AS logDate,
+           l.feedback
+    FROM Log l
+    JOIN Workout_template wt ON wt.tid = l.tid
+    JOIN Course c ON c.courseID = wt.courseID
+    JOIN User u ON u.uid = l.uid
+    WHERE c.uid = :coach';
+
+$params = ['coach' => $coachUid];
+
+if ($courseFilter) {
+    $sql .= ' AND c.courseID = :course';
+    $params['course'] = $courseFilter;
+}
+if ($userFilter) {
+    $sql .= ' AND l.uid = :user';
+    $params['user'] = $userFilter;
+}
+$sql .= ' ORDER BY l.date DESC';
 
 $stmt = $db->prepare($sql);
-$stmt->execute(['uid' => $uid]);
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt->execute($params);
+$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Group feedback by log ID
-$log_data = [];
-foreach ($results as $row) {
-    $lid = $row['lid'];
-    if (!isset($log_data[$lid])) {
-        $log_data[$lid] = [
-            'date' => $row['date'],
-            'feedback' => $row['feedback'],
-            'exercises' => []
-        ];
-    }
-    $log_data[$lid]['exercises'][] = $row['exercise_name'];
-}
+$exStmt = $db->prepare(
+    'SELECT e.name,
+            ee.sets,
+            ee.reps,
+            ee.time,
+            ee.weight
+     FROM Entered_exercise ee
+     JOIN Exercise e ON e.eid = ee.eid
+     WHERE ee.lid = ?'
+);
 ?>
-
-<!--HTML formatting-->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Feedback</title>
     <link rel="stylesheet" href="css/feedback.css">
 </head>
-<body>
-    <div class="feedback-list">
-        <h2>Your Coach's Feedback</h2>
+<body class="site-font">
 
-        <!-- Show feedback according to the log data in a toggle list-->
-        <?php if (count($log_data) > 0): ?>
-            <?php foreach ($log_data as $lid => $log): ?>
-                <div class="feedback-item">
-                    <div class="feedback-toggle" onclick="toggleFeedback('log-<?php echo $lid; ?>')">
-                        <?php echo date('F j, Y', strtotime($log['date'])); ?>
-                    </div>
-                    <div class="feedback-body" id="log-<?php echo $lid; ?>">
-                        <strong>Exercises:</strong>
-                        <?php $exerciseClass = count($log['exercises']) >= 6 ? 'exercise-grid' : ''; ?>
-                        <ul class="<?php echo $exerciseClass; ?>">
-                            <?php foreach ($log['exercises'] as $exercise): ?>
-                                <li><?php echo htmlspecialchars($exercise); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+<h2>Logs: Add Feedback</h2>
 
-                        <div class="feedback-text">
-                            <?php echo nl2br(htmlspecialchars($log['feedback'])); ?>
-                        </div>
-                    </div>
-                </div>
+<form method="get" class="filter-bar">
+    <label>Course:
+        <select name="course">
+            <option value="">All</option>
+            <?php foreach ($courses as $cid => $cname): ?>
+                <option value="<?= $cid ?>" <?= $cid === $courseFilter ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($cname) ?>
+                </option>
             <?php endforeach; ?>
-        <?php else: ?>
-            <p>No feedback available yet.</p>
-        <?php endif; ?>
-    </div>
+        </select>
+    </label>
 
-    <script>
-        // Function to toggle feedback visibility
-        function toggleFeedback(id) {
-            const content = document.getElementById(id);
-            if (!content) return;
+    <label>User:
+        <select name="user">
+            <option value="">All</option>
+            <?php foreach ($students as $sid => $sname): ?>
+                <option value="<?= $sid ?>" <?= $sid === $userFilter ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($sname) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </label>
 
-            const isVisible = content.style.display === "block";
-            content.style.display = isVisible ? "none" : "block";
+    <button type="submit">Filter</button>
+</form>
 
-            const header = content.previousElementSibling;
-            header.classList.toggle("open");
+<?php if ($courseFilter || $userFilter): ?>
+<div style="width: 90%; margin: 0 auto 1rem; font-weight: 600;">
+    <?php if ($courseFilter): ?>
+        <div>Course: <?= htmlspecialchars($courses[$courseFilter] ?? 'Unknown Course') ?></div>
+    <?php endif; ?>
+    <?php if ($userFilter): ?>
+        <div>User: <?= htmlspecialchars($students[$userFilter] ?? 'Unknown User') ?></div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
+<?php if (!$logs): ?>
+    <p>No logs found for the chosen criteria.</p>
+<?php else: ?>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <?php if (!$courseFilter): ?><th>Course</th><?php endif; ?>
+            <?php if (!$userFilter): ?><th>User</th><?php endif; ?>
+            <th>Exercises</th>
+            <th>Feedback</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($logs as $row): ?>
+    <?php
+        $exStmt->execute([$row['lid']]);
+        $exercises = $exStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $parts = [];
+        foreach ($exercises as $ex) {
+            $detail = [];
+            if ($ex['sets'])   $detail[] = $ex['sets'] . 'sets';
+            if ($ex['reps'])   $detail[] = $ex['reps'] . 'reps';
+            if ($ex['time'])   $detail[] = $ex['time'] . 'm';
+            if ($ex['weight']) $detail[] = $ex['weight'] . 'lbs';
+            $parts[] = $ex['name'] . ' (' . implode('/', $detail) . ')';
         }
-    </script>
+    ?>
+        <form method="post">
+        <tr>
+            <td><?= htmlspecialchars($row['logDate']) ?></td>
+            <?php if (!$courseFilter): ?>
+                <td><?= htmlspecialchars($row['courseName']) ?></td>
+            <?php endif; ?>
+            <?php if (!$userFilter): ?>
+                <td><?= htmlspecialchars($row['username']) ?></td>
+            <?php endif; ?>
+            <td><?= $parts ? htmlspecialchars(implode('; ', $parts)) : '—' ?></td>
+            <td>
+                <textarea name="feedback"><?= htmlspecialchars($row['feedback'] ?? '') ?></textarea>
+                <input type="hidden" name="lid" value="<?= (int) $row['lid'] ?>">
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button type="submit" name="save">Save</button>
+                    <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this log?')">Delete</button>
+                </div>
+            </td>
+        </tr>
+        </form>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>
+
 </body>
 </html>

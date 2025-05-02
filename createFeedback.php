@@ -21,23 +21,36 @@ if (!$_SESSION['is_admin']) {
 
 $coachUid = (int) $_SESSION['uid'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['lid'], $_POST['feedback'])) {
-    $lid      = (int) $_POST['lid'];
-    $feedback = trim($_POST['feedback']);
+// Handle Save or Delete
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['lid'])) {
+    $lid = (int) $_POST['lid'];
 
-    $stmt = $db->prepare(
-        'UPDATE Log l
-         JOIN Workout_template wt ON wt.tid = l.tid
-         JOIN Course c            ON c.courseID = wt.courseID
-         SET l.feedback = :fb
-         WHERE l.lid = :lid
-           AND c.uid = :coach'
-    );
-    $stmt->execute([
-        'fb'    => $feedback,
-        'lid'   => $lid,
-        'coach' => $coachUid,
-    ]);
+    if (isset($_POST['delete'])) {
+        $stmt = $db->prepare(
+            'DELETE l FROM Log l
+             JOIN Workout_template wt ON wt.tid = l.tid
+             JOIN Course c ON c.courseID = wt.courseID
+             WHERE l.lid = :lid AND c.uid = :coach'
+        );
+        $stmt->execute([
+            'lid' => $lid,
+            'coach' => $coachUid,
+        ]);
+    } elseif (isset($_POST['save']) && isset($_POST['feedback'])) {
+        $feedback = trim($_POST['feedback']);
+        $stmt = $db->prepare(
+            'UPDATE Log l
+             JOIN Workout_template wt ON wt.tid = l.tid
+             JOIN Course c ON c.courseID = wt.courseID
+             SET l.feedback = :fb
+             WHERE l.lid = :lid AND c.uid = :coach'
+        );
+        $stmt->execute([
+            'fb' => $feedback,
+            'lid' => $lid,
+            'coach' => $coachUid,
+        ]);
+    }
 
     header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
     exit();
@@ -51,39 +64,38 @@ $stmt = $db->prepare(
     'SELECT DISTINCT u.uid, u.username
      FROM Enrollment e
      JOIN Course c ON c.courseID = e.courseID
-     JOIN User  u ON u.uid      = e.uid
+     JOIN User u ON u.uid = e.uid
      WHERE c.uid = ?
      ORDER BY u.username'
 );
 $stmt->execute([$coachUid]);
 $students = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-$courseFilter = isset($_GET['course']) && ctype_digit($_GET['course'])
-    ? (int) $_GET['course'] : null;
-$userFilter   = isset($_GET['user']) && ctype_digit($_GET['user'])
-    ? (int) $_GET['user'] : null;
+$courseFilter = isset($_GET['course']) && ctype_digit($_GET['course']) ? (int) $_GET['course'] : null;
+$userFilter = isset($_GET['user']) && ctype_digit($_GET['user']) ? (int) $_GET['user'] : null;
 
 $sql = '
     SELECT l.lid,
            u.username,
-           c.name        AS courseName,
-           DATE(l.date)  AS logDate,
+           c.courseID,
+           c.name AS courseName,
+           DATE(l.date) AS logDate,
            l.feedback
     FROM Log l
     JOIN Workout_template wt ON wt.tid = l.tid
-    JOIN Course c            ON c.courseID = wt.courseID
-    JOIN User   u            ON u.uid      = l.uid
+    JOIN Course c ON c.courseID = wt.courseID
+    JOIN User u ON u.uid = l.uid
     WHERE c.uid = :coach';
 
 $params = ['coach' => $coachUid];
 
 if ($courseFilter) {
-    $sql               .= ' AND c.courseID = :course';
+    $sql .= ' AND c.courseID = :course';
     $params['course'] = $courseFilter;
 }
 if ($userFilter) {
-    $sql               .= ' AND l.uid = :user';
-    $params['user']   = $userFilter;
+    $sql .= ' AND l.uid = :user';
+    $params['user'] = $userFilter;
 }
 $sql .= ' ORDER BY l.date DESC';
 
@@ -103,14 +115,45 @@ $exStmt = $db->prepare(
 );
 ?>
 <!DOCTYPE html>
+<html>
 <head>
     <link rel="stylesheet" href="css/feedback.css">
+    <style>
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .action-buttons button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .action-buttons button[name="save"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .action-buttons button[name="delete"] {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .action-buttons button:hover {
+            opacity: 0.85;
+        }
+    </style>
 </head>
 <body class="site-font">
 
 <h2>Logs: Add Feedback</h2>
 
-<form method="get">
+<form method="get" class="filter-bar">
     <label>Course:
         <select name="course">
             <option value="">All</option>
@@ -136,6 +179,17 @@ $exStmt = $db->prepare(
     <button type="submit">Filter</button>
 </form>
 
+<?php if ($courseFilter || $userFilter): ?>
+<div style="width: 90%; margin: 0 auto 1rem; font-weight: 600;">
+    <?php if ($courseFilter): ?>
+        <div>Course: <?= htmlspecialchars($courses[$courseFilter] ?? 'Unknown Course') ?></div>
+    <?php endif; ?>
+    <?php if ($userFilter): ?>
+        <div>User: <?= htmlspecialchars($students[$userFilter] ?? 'Unknown User') ?></div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
 <?php if (!$logs): ?>
     <p>No logs found for the chosen criteria.</p>
 <?php else: ?>
@@ -143,43 +197,52 @@ $exStmt = $db->prepare(
     <thead>
         <tr>
             <th>Date</th>
-            <th>Course</th>
-            <th>User</th>
+            <?php if (!$courseFilter): ?><th>Course</th><?php endif; ?>
+            <?php if (!$userFilter): ?><th>User</th><?php endif; ?>
             <th>Exercises</th>
             <th>Feedback</th>
-            <th>Save</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-<?php foreach ($logs as $row): ?>
-<?php
-    $exStmt->execute([$row['lid']]);
-    $exercises = $exStmt->fetchAll(PDO::FETCH_ASSOC);
+    <?php foreach ($logs as $row): ?>
+    <?php
+        $exStmt->execute([$row['lid']]);
+        $exercises = $exStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $parts = [];
-    foreach ($exercises as $ex) {
-        $detail = [];
-        if ($ex['sets'])   $detail[] = $ex['sets'].'s';
-        if ($ex['reps'])   $detail[] = $ex['reps'].'r';
-        if ($ex['time'])   $detail[] = $ex['time'].'m';
-        if ($ex['weight']) $detail[] = $ex['weight'].'lb';
-        $parts[] = $ex['name'].' ('.implode('/', $detail).')';
-    }
-?>
+        $parts = [];
+        foreach ($exercises as $ex) {
+            $detail = [];
+            if ($ex['sets'])   $detail[] = $ex['sets'] . 'sets';
+            if ($ex['reps'])   $detail[] = $ex['reps'] . 'reps';
+            if ($ex['time'])   $detail[] = $ex['time'] . 'm';
+            if ($ex['weight']) $detail[] = $ex['weight'] . 'lbs';
+            $parts[] = $ex['name'] . ' (' . implode('/', $detail) . ')';
+        }
+    ?>
         <form method="post">
         <tr>
             <td><?= htmlspecialchars($row['logDate']) ?></td>
-            <td><?= htmlspecialchars($row['courseName']) ?></td>
-            <td><?= htmlspecialchars($row['username']) ?></td>
+            <?php if (!$courseFilter): ?>
+                <td><?= htmlspecialchars($row['courseName']) ?></td>
+            <?php endif; ?>
+            <?php if (!$userFilter): ?>
+                <td><?= htmlspecialchars($row['username']) ?></td>
+            <?php endif; ?>
             <td><?= $parts ? htmlspecialchars(implode('; ', $parts)) : '—' ?></td>
             <td>
                 <textarea name="feedback"><?= htmlspecialchars($row['feedback'] ?? '') ?></textarea>
                 <input type="hidden" name="lid" value="<?= (int) $row['lid'] ?>">
             </td>
-            <td><button type="submit">Save</button></td>
+            <td>
+                <div class="action-buttons">
+                    <button type="submit" name="save">Save</button>
+                    <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this log?')">Delete</button>
+                </div>
+            </td>
         </tr>
         </form>
-<?php endforeach; ?>
+    <?php endforeach; ?>
     </tbody>
 </table>
 <?php endif; ?>
