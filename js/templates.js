@@ -15,20 +15,28 @@ function openExerciseModal(eid, name) {
 
 function addExerciseToTemplate() {
     const setsInput = document.getElementById('modalSets');
+    const sets = parseInt(setsInput.value.trim(), 10);
 
-    if (!setsInput.value.trim()) {
-        setsInput.reportValidity();
+    if (isNaN(sets) || sets <= 0 || sets.toString() !== setsInput.value.trim()) {
+        showToast('Sets must be a positive whole number.', 'error');
+        setsInput.focus();
         return;
     }
 
     const eid = document.getElementById('modalEid').value;
     const name = document.getElementById('modalExerciseName').innerText;
-    const reps = document.getElementById('modalReps').value;
-    const sets = document.getElementById('modalSets').value;
-    const weight = document.getElementById('modalWeight').value;
-    const time = document.getElementById('modalTime').value;
+    const reps = document.getElementById('modalReps').value.trim();
+    const weight = document.getElementById('modalWeight').value.trim();
+    const time = document.getElementById('modalTime').value.trim();
 
-    selectedExercises.push({ eid, name, reps, sets, weight, time });
+    selectedExercises.push({
+        eid,
+        name,
+        reps: reps !== '' ? parseInt(reps, 10) || 0 : 0,
+        sets,
+        weight: weight !== '' ? parseInt(weight, 10) || 0 : 0,
+        time: time !== '' ? parseInt(time, 10) || 0 : 0
+    });
 
     renderExerciseTable();
     bootstrap.Modal.getInstance(document.getElementById('exerciseModal')).hide();
@@ -48,7 +56,7 @@ function renderExerciseTable() {
       row.innerHTML = `
         <td>${ex.name}</td>
         <td contenteditable="true" oninput="updateField(${index}, 'reps', this.innerText)">${ex.reps || '0'}</td>
-        <td contenteditable="true" oninput="updateField(${index}, 'sets', this.innerText)">${ex.sets}</td>
+        <td contenteditable="true" onblur="updateField(${index}, 'sets', this.innerText)">${ex.sets}</td>
         <td contenteditable="true" oninput="updateField(${index}, 'weight', this.innerText)">${ex.weight || '0'}</td>
         <td contenteditable="true" oninput="updateField(${index}, 'time', this.innerText)">${ex.time || '0'}</td>
         <td>
