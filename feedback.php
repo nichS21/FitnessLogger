@@ -10,7 +10,7 @@ if (!isset($_SESSION['uid'])) {
     exit();
 }
 
-// Connect to DB (make sure $db is defined in classes_util.php or here)
+// Connect to DB 
 $studentUid = (int) $_SESSION['uid'];
 
 // Redirect admins/coaches

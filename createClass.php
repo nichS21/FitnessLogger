@@ -39,11 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                  ?? 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.0.3&q=80&w=1080';
 
     createClass($db, $uid, $className, $classDes, $classLength, $imageUrl);
+    
     $newCourseID = $db->lastInsertId(); 
     $_SESSION['courseid']         = $newCourseID;
     $_SESSION['latest_course_id'] = $newCourseID;
 
-    $tname = $_POST['template'] ?? null;
+    $tname = $_POST['template'];
     if ($tname) {
         $stmt = $db->prepare(
             'UPDATE Workout_template
@@ -62,20 +63,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->execute([$uid, $newCourseID, $tname]);
         }
     }
+
+    $_SESSION['toastClass'] = ['message' => 'New course created!', 'type' => 'success'];
+    header('Location: dashboard.php');
+    exit();
 }
 
 $stmt = $db->prepare(
     'SELECT DISTINCT wt.tname
-       FROM Workout_template wt
-      WHERE wt.uid = ?
-        AND NOT EXISTS (
-              SELECT 1
+     FROM Workout_template wt
+     WHERE wt.uid = ?
+     AND NOT EXISTS (
+            SELECT 1
                 FROM Workout_template wt2
-               WHERE wt2.uid   = wt.uid
+                WHERE wt2.uid   = wt.uid
                  AND wt2.tname = wt.tname
                  AND wt2.courseID IS NOT NULL
             )
-      ORDER BY wt.tname ASC'
+    ORDER BY wt.tname ASC'
 );
 $stmt->execute([$uid]);
 $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -146,5 +151,14 @@ $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button id="cancelBtn">Cancel</button>
         </div>
     </div>
+
+    <?php
+        if (isset($_SESSION['toastTemp'])) {
+            echo("Hello");
+            $toastTemp = $_SESSION['toastTemp'];
+            showToast($toastTemp['message'], $toastTemp['type']);
+            unset($_SESSION['toastTemp']);
+        }
+    ?>
 </body>
 </html>

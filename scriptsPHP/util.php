@@ -136,3 +136,16 @@ function updateAccount($db, $uid, $weight, $height, $weeklyCalGoal) {
     $stmt->execute([$weight, $height, $weeklyCalGoal, $uid]);
 
 }
+
+function showToast($message, $type = 'success') {
+    echo '
+    <div id="toast" class="toast ' . $type . '">' . $message . '</div>
+    <script>
+        setTimeout(function() {
+            const toast = document.getElementById("toast");
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3000);
+        }, 1000);
+    </script>
+    ';
+}
