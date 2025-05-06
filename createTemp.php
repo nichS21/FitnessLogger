@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once("scriptsPHP/classes_util.php");
 
-//Check if user is logged in
+// Check if user is logged in
 if (!isset($_SESSION['uid'])) {
     header('Location: index.php');
     exit();
@@ -59,14 +59,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ]);
         }
 
-        showToast("New template created and exercises added!", "success");
+        $_SESSION['toastTemp'] = ['message' => 'New template created and exercises added!', 'type' => 'success'];
+        header('Location: createClass.php');
+        exit();
     } catch (PDOException $e) {
         showToast("Error: " . $e->getMessage(), "error");
     }
 }
 ?>
 
-<!--HTML formatting-->
+<!-- HTML starts here -->
 <!DOCTYPE html>
 <head>
     <title>Create Workout Template</title>
@@ -169,7 +171,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         </div>
 
                         <div class="mb-3 row align-items-center">
-                            <label for="modalTime" class="col-sm-4 col-form-label text-end">Time (sec):</label>
+                            <label for="modalTime" class="col-sm-4 col-form-label text-end">Time (min):</label>
                             <div class="col-sm-8">
                                 <input type="number" id="modalTime" class="form-control">
                             </div>

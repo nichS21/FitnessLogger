@@ -4,10 +4,10 @@ let draggedIndex = null;
 function openExerciseModal(eid, name) {
     document.getElementById('modalEid').value = eid;
     document.getElementById('modalExerciseName').innerText = name;
-    document.getElementById('modalReps').value = '';
-    document.getElementById('modalSets').value = '';
-    document.getElementById('modalWeight').value = '';
-    document.getElementById('modalTime').value = '';
+    document.getElementById('modalReps').value = '0';
+    document.getElementById('modalSets').value = '1';
+    document.getElementById('modalWeight').value = '0';
+    document.getElementById('modalTime').value = '1';
 
     const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('exerciseModal'));
     modal.show();

@@ -15,7 +15,7 @@ include("dashboard_util.php");
 // $uid = 2;
 
     //set uid
-    $uid = $_SESSION['uid'];                 
+    $uid = $_SESSION['uid'];             
 ?>
 
 <!DOCTYPE html>
@@ -88,6 +88,12 @@ include("dashboard_util.php");
             </div>
         </section>
     </main>
+    <?php
+        if (isset($_SESSION['toastClass'])) {
+            $toastClass = $_SESSION['toastClass'];
+            showToast($toastClass['message'], $toastClass['type']);
+            unset($_SESSION['toastClass']);
+        }
+    ?>
 </body>
-
 </html>

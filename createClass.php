@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <?php
 //error_reporting(E_ALL);
 //ini_set('display_errors', 1);
@@ -10,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once("scriptsPHP/classes_util.php");
 
-//Check if user is logged in
+// Check if user is logged in
 if (!isset($_SESSION['uid'])) {
     header('Location: index.php');
     exit();
@@ -39,47 +38,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                  ?? 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.0.3&q=80&w=1080';
 
     createClass($db, $uid, $className, $classDes, $classLength, $imageUrl);
+    
     $newCourseID = $db->lastInsertId(); 
     $_SESSION['courseid']         = $newCourseID;
     $_SESSION['latest_course_id'] = $newCourseID;
 
-    $tname = $_POST['template'] ?? null;
+    $tname = $_POST['template'];
     if ($tname) {
-        $stmt = $db->prepare(
-            'UPDATE Workout_template
-                SET courseID = ?
-              WHERE uid      = ?
-                AND tname    = ?
-                AND courseID IS NULL'
-        );
-        $stmt->execute([$newCourseID, $uid, $tname]);
-
-        if ($stmt->rowCount() === 0) {
-            $stmt = $db->prepare(
-                'INSERT INTO Workout_template (uid, courseID, tname)
-                 VALUES (?, ?, ?)'
-            );
-            $stmt->execute([$uid, $newCourseID, $tname]);
-        }
+        updateTemp($db, $uid, $newCourseID, $_POST['template']);
     }
+
+    $_SESSION['toastClass'] = ['message' => 'New course created!', 'type' => 'success'];
+    header('Location: dashboard.php');
+    exit();
 }
 
-$stmt = $db->prepare(
-    'SELECT DISTINCT wt.tname
-       FROM Workout_template wt
-      WHERE wt.uid = ?
-        AND NOT EXISTS (
-              SELECT 1
-                FROM Workout_template wt2
-               WHERE wt2.uid   = wt.uid
-                 AND wt2.tname = wt.tname
-                 AND wt2.courseID IS NOT NULL
-            )
-      ORDER BY wt.tname ASC'
-);
-$stmt->execute([$uid]);
-$templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$templates = fetchTemps($db, $uid);
+
 ?>
+
+<!-- HTML starts here -->
+
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="css/creation.css"> 
@@ -115,6 +94,7 @@ $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 Pictures from <a href="https://unsplash.com" target="_blank">Unsplash</a>
             </small>
 
+            <!-- Template Selection -->
             <label for="template">Choose a Template:</label>
             <select id="template" name="template" class="form-select" <?= count($templates) ? '' : 'disabled' ?>>
                 <?php if (count($templates) > 0): ?>
@@ -146,5 +126,13 @@ $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button id="cancelBtn">Cancel</button>
         </div>
     </div>
+
+    <?php
+        if (isset($_SESSION['toastTemp'])) {
+            $toastTemp = $_SESSION['toastTemp'];
+            showToast($toastTemp['message'], $toastTemp['type']);
+            unset($_SESSION['toastTemp']);
+        }
+    ?>
 </body>
 </html>

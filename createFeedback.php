@@ -1,19 +1,25 @@
 <?php
+
+// Set sessions and include necessary files
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 include_once 'scriptsPHP/classes_util.php';
 
+// Ensure user is logged in
 if (!isset($_SESSION['uid'])) {
     header('Location:index.php');
     exit();
 }
 
+// Check if user is an admin (coach)
 if (!isset($_SESSION['is_admin'])) {
     $stmt = $db->prepare('SELECT 1 FROM Admin WHERE uid = ? LIMIT 1');
     $stmt->execute([$_SESSION['uid']]);
     $_SESSION['is_admin'] = (bool) $stmt->fetchColumn();
 }
+
+// Redirect to dashboard if not an admin
 if (!$_SESSION['is_admin']) {
     header('Location:dashboard.php');
     exit();
@@ -21,56 +27,25 @@ if (!$_SESSION['is_admin']) {
 
 $coachUid = (int) $_SESSION['uid'];
 
-// Handle Save or Delete
+// Handle Save or Delete for feedback
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['lid'])) {
     $lid = (int) $_POST['lid'];
 
     if (isset($_POST['delete'])) {
-        $stmt = $db->prepare(
-            'DELETE l FROM Log l
-             JOIN Workout_template wt ON wt.tid = l.tid
-             JOIN Course c ON c.courseID = wt.courseID
-             WHERE l.lid = :lid AND c.uid = :coach'
-        );
-        $stmt->execute([
-            'lid' => $lid,
-            'coach' => $coachUid,
-        ]);
+        deleteLog($db, $lid, $coachUid);      
     } elseif (isset($_POST['save']) && isset($_POST['feedback'])) {
         $feedback = trim($_POST['feedback']);
-        $stmt = $db->prepare(
-            'UPDATE Log l
-             JOIN Workout_template wt ON wt.tid = l.tid
-             JOIN Course c ON c.courseID = wt.courseID
-             SET l.feedback = :fb
-             WHERE l.lid = :lid AND c.uid = :coach'
-        );
-        $stmt->execute([
-            'fb' => $feedback,
-            'lid' => $lid,
-            'coach' => $coachUid,
-        ]);
+        updateLog($db, $lid, $coachUid, $feedback);
     }
 
     header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
     exit();
 }
 
-$stmt = $db->prepare('SELECT courseID, name FROM Course WHERE uid = ? ORDER BY name');
-$stmt->execute([$coachUid]);
-$courses = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+$courses = getCoachCourses($db, $coachUid);
+$students = getUsers($db, $coachUid);
 
-$stmt = $db->prepare(
-    'SELECT DISTINCT u.uid, u.username
-     FROM Enrollment e
-     JOIN Course c ON c.courseID = e.courseID
-     JOIN User u ON u.uid = e.uid
-     WHERE c.uid = ?
-     ORDER BY u.username'
-);
-$stmt->execute([$coachUid]);
-$students = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-
+// Get filters from GET parameters for user and course
 $courseFilter = isset($_GET['course']) && ctype_digit($_GET['course']) ? (int) $_GET['course'] : null;
 $userFilter = isset($_GET['user']) && ctype_digit($_GET['user']) ? (int) $_GET['user'] : null;
 
@@ -114,6 +89,9 @@ $exStmt = $db->prepare(
      WHERE ee.lid = ?'
 );
 ?>
+
+<!-- HTML starts here -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -146,7 +124,7 @@ $exStmt = $db->prepare(
                 <?php endforeach; ?>
             </select>
         </label>
-        <button type="submit">Filter</button>
+        <button type="submit" class = "gnrlBtn">Filter</button>
     </form>
 </div>
 
