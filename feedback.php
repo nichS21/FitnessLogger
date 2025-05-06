@@ -1,4 +1,6 @@
 <?php
+
+// Set sessions and include necessary files
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -6,7 +8,7 @@ include_once 'scriptsPHP/classes_util.php';
 
 // Ensure user is logged in
 if (!isset($_SESSION['uid'])) {
-    header('Location: login.php');
+    header('Location:login.php');
     exit();
 }
 
@@ -51,6 +53,9 @@ $exStmt = $db->prepare(
      WHERE ee.lid = ?'
 );
 ?>
+
+<!-- HTML starts here -->
+
 <!DOCTYPE html>
 <html>
 <head>

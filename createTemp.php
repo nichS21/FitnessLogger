@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once("scriptsPHP/classes_util.php");
 
-//Check if user is logged in
+// Check if user is logged in
 if (!isset($_SESSION['uid'])) {
     header('Location: index.php');
     exit();
@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<!--HTML formatting-->
+<!-- HTML starts here -->
 <!DOCTYPE html>
 <head>
     <title>Create Workout Template</title>
