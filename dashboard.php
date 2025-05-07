@@ -4,18 +4,7 @@ session_start();
 include("scriptsPHP/util.php");
 include("dashboard_util.php");
 
-// neededImports();
-// $user = "User";
-
-// $query = "SELECT * FROM User";
-// $result = $db->query($query);
-// print_r($result);
-// print "<div>$result</div>";
-
-// $uid = 2;
-
-    //set uid
-    $uid = $_SESSION['uid'];             
+$uid = $_SESSION['uid'];             
 ?>
 
 <!DOCTYPE html>
@@ -38,18 +27,7 @@ include("dashboard_util.php");
             <div class="course-grid">
                 <?php
                     genCourse($db, $uid);
-                    // if (isset($_GET['uid'])) {
-                    //     $uid = $_GET['uid'];
-                    //     genCourse($db, $uid);
-                    // }
-                    // else {
-                    //     echo "<p>You do not have any course so far</p>";
-                    // }
                 ?>
-            </div>
-            <div class="track">
-                <div class="progress-bar" data-label="Calories..."></div>
-                <!-- <div class="text">Goal</div> -->
             </div>
         </section>
 
