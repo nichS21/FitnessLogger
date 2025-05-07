@@ -121,7 +121,7 @@ function logout() {
     }
     session_unset();
     session_destroy();
-    header("Location: index.php");
+    header("Location:index.php");
     exit();
 }
 
@@ -137,3 +137,15 @@ function updateAccount($db, $uid, $weight, $height, $weeklyCalGoal) {
 
 }
 
+function showToast($message, $type = 'success') {
+    echo '
+    <div id="toast" class="toast ' . $type . '">' . $message . '</div>
+    <script>
+        setTimeout(function() {
+            const toast = document.getElementById("toast");
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3000);
+        }, 1000);
+    </script>
+    ';
+}

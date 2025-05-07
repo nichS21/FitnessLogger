@@ -15,7 +15,7 @@ include("dashboard_util.php");
 // $uid = 2;
 
     //set uid
-    $uid = $_SESSION['uid'];                 
+    $uid = $_SESSION['uid'];             
 ?>
 
 <!DOCTYPE html>
@@ -81,12 +81,19 @@ include("dashboard_util.php");
                     }
                     else {
                         echo "
-                        <div class='button'><a href='./showCourse.php?menu=enroll'>See All Courses</a></div>";
+                        <div class='button'><a href='./showCourse.php?menu=enroll'>See All Courses</a></div>
+                        <div class='button'><a href='./feedback.php'>View Recent Feedback</a></div>";
                     }
                 ?>
             </div>
         </section>
     </main>
+    <?php
+        if (isset($_SESSION['toastClass'])) {
+            $toastClass = $_SESSION['toastClass'];
+            showToast($toastClass['message'], $toastClass['type']);
+            unset($_SESSION['toastClass']);
+        }
+    ?>
 </body>
-
 </html>

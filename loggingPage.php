@@ -103,15 +103,15 @@ error_reporting(E_ALL);
 <!-- Delete Confirmation Modal -->
 <div class="modalDel" id="delModal">
     <div class="modalContent">
-        <div class="mHeader site-color-2nd">
+        <div class="mHeader site-color">
             <p class="fs-4 fw-bold">Confirm delete</p>
         </div>
         <div class="mBody">
             <p class="fs-6"> Are you sure you want to delete this exercise?</p>
         </div>
-        <div class="mFooter text-end site-color-2nd">
-            <button class="gnrlBtnSmall" id="modalCan">Cancel</button>
-            <button class="gnrlBtnSmall" id="modalCon">Delete</button>
+        <div class="mFooter text-end site-color">
+            <button class="gnrlBtn" id="modalCan">Cancel</button>
+            <button class="gnrlBtn" id="modalCon">Delete</button>
         </div>
     </div>
 </div>
@@ -135,14 +135,10 @@ error_reporting(E_ALL);
                                         <div class="card-header fw-bold">Choose a date:</div>
                                         <div class="card-body">
                                             <input class="form-control form-control-lg" style="width:20vw" type="date" name="date" id="date" min="2025-01-01" required/>
-                                            
-                                            <div class="row">
-                                                <div class="col-sm-10"></div>
-                                                <div class="col-sm-2">
-                                                    <button class="gnrlBtn" type="submit">Search</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div>   
+                                        <div class="card-footer text-end">
+                                            <button class="gnrlBtn" type="submit">Search</button>
+                                        </div>    
                                     </div>                              
                                 </div>
 
@@ -184,8 +180,7 @@ error_reporting(E_ALL);
                     unset($_SESSION['date']);       //unset date after displaying this log, do not want this value stuck in session data
                 } 
                 else if(isset($_POST['date'])) $date = $_POST['date'];
-                else $date = "";
-
+                else return;
                 
                 displayPage($db, $uid, $date);
                 break;

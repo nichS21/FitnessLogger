@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 session_start();
 if (!isset($_SESSION['uid'])) {
@@ -12,6 +9,9 @@ include_once("scriptsPHP/dbConnect.php");
 include_once("scriptsPHP/util.php"); // Ensure util.php does not call session_start()
 
 $uid = $_SESSION['uid'];
+
+// Assume $selectedDate is obtained from user input (e.g., via GET or POST)
+$selectedDate = $_GET['date']; // or $_POST['date']
 
 // Query user's weeklyCalGoal using backticks around column/table names
 $stmt = $db->prepare("SELECT weeklyCalGoal FROM `User` WHERE `uid` = ?");
@@ -25,21 +25,29 @@ $stmt2 = $db->prepare("
     FROM Entered_exercise ee 
     JOIN Log l ON ee.lid = l.lid 
     WHERE l.uid = ?
+      AND l.date >= ?
+      AND l.date < DATE_ADD(?, INTERVAL 7 DAY)
 ");
-$stmt2->execute([$uid]);
+$stmt2->execute([$uid, $selectedDate, $selectedDate]);
 $rowCal = $stmt2->fetch(PDO::FETCH_ASSOC);
 $totalCaloriesEntered = $rowCal['totalCal'] ? $rowCal['totalCal'] : 0;
 
 // Query joined data for reps and sets from Entered_exercise and Templated_exercise
 $stmt3 = $db->prepare("
-    SELECT e.eid, e.reps AS repsEntered, e.sets AS setsEntered, 
-           te.reps AS repsTemplated, te.sets AS setsTemplated 
+    SELECT ex.name AS exerciseName, 
+           e.reps AS repsEntered, 
+           e.sets AS setsEntered, 
+           te.reps AS repsTemplated, 
+           te.sets AS setsTemplated 
     FROM Entered_exercise e 
-    JOIN Log l ON e.lid = l.lid
+    JOIN Log l ON e.lid = l.lid 
+    JOIN Exercise ex ON e.eid = ex.eid
     JOIN Templated_exercise te ON e.eid = te.eid 
     WHERE l.uid = ?
+      AND l.date >= ?
+      AND l.date < DATE_ADD(?, INTERVAL 7 DAY)
 ");
-$stmt3->execute([$uid]);
+$stmt3->execute([$uid, $selectedDate, $selectedDate]);
 $exerciseData = $stmt3->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -56,6 +64,31 @@ $exerciseData = $stmt3->fetchAll(PDO::FETCH_ASSOC);
     <?php genNavBar(); ?>
     <h1>Analytics</h1>
     <p>User: <?php echo htmlentities($_SESSION['username']); ?></p>
+    
+    <!-- Date Selection Form -->
+    <form method="GET" action="analytics.php">
+        <label for="weekDate">Choose Week (Sunday): </label>
+        <select name="date" id="weekDate">
+            <?php 
+                // Get today's date.
+                $today = new DateTime();
+                // Compute the most recent Sunday: if today is Sunday, that's it; otherwise, roll back.
+                $dayOfWeek = $today->format('w'); // Sunday = 0, Monday = 1, ...
+                $mostRecentSunday = clone $today;
+                if ($dayOfWeek != 0) {
+                    $mostRecentSunday->modify("-{$dayOfWeek} days");
+                }
+                // List the 12 most recent Sundays
+                for ($i = 0; $i < 12; $i++) {
+                    $sundayStr = $mostRecentSunday->format('Y-m-d');
+                    echo "<option value=\"$sundayStr\">$sundayStr</option>";
+                    // Go to the previous Sunday
+                    $mostRecentSunday->modify("-7 days");
+                }
+            ?>
+        </select>
+        <input type="submit" value="View Week">
+    </form>
     
     <!-- Calories Chart -->
     <h2>Calories Burned vs Weekly Calorie Goal</h2>
@@ -97,7 +130,7 @@ $exerciseData = $stmt3->fetchAll(PDO::FETCH_ASSOC);
         var exerciseData = <?php echo json_encode($exerciseData); ?>;
         
         var labels = exerciseData.map(function(item) {
-            return 'Ex ' + item.eid;
+            return item.exerciseName;
         });
         var repsEntered = exerciseData.map(function(item) {
             return item.repsEntered;
