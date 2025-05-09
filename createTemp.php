@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             <th>Reps</th>
                             <th>Sets</th>
                             <th>Weight</th>
-                            <th>Time (sec)</th>
+                            <th>Time (min)</th>
                             <th>Actions</th>
                             <th></th>
                         </tr>
